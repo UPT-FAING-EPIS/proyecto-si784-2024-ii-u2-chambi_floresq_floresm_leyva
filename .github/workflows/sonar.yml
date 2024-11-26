@@ -49,11 +49,14 @@ jobs:
         run: |
           pip install -r proyecto/requirements.txt
 
-      # Paso 7: Ejecutar pruebas con cobertura
+      # Paso 7: Ejecutar pruebas con cobertura y generar ambos reportes
       - name: Run tests with coverage
         run: |
           cd proyecto
-          pytest --cov=. --cov-report=xml:report_coverage/coverage.xml  # Genera el archivo coverage.xml
+          # Generar reporte en formato XML
+          pytest --cov=. --cov-report=xml:report_coverage/coverage.xml  
+          # Generar reporte en formato HTML
+          pytest --cov=. --cov-report=html:report_coverage/htmlcov  # Este es el reporte HTML
 
       # Paso 8: Ejecutar análisis en SonarCloud
       - name: Run SonarCloud Analysis
@@ -67,26 +70,20 @@ jobs:
             -Dsonar.python.coverage.reportPaths=proyecto/report_coverage/coverage.xml \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
-      # Paso 9: Convertir coverage.xml a HTML usando cobertura.py
-      - name: Convert coverage.xml to HTML
-        run: |
-          # Instalar cobertura.py para convertir coverage.xml a HTML
-          pip install coverage
-          coverage html -d cobertura_html report_coverage/coverage.xml  # Usar coverage.xml previamente generado para generar HTML
-
-      # Paso 10: Crear carpeta de reportes
+      # Paso 9: Crear carpeta de reportes
       - name: Create Reports folder
         run: |
           mkdir -p Reportes  # Crear el directorio si no existe
-          mv cobertura_html/index.html Reportes/reporte-sonar.html  # Mover el reporte HTML a la carpeta de reportes
+          # Mover el reporte HTML
+          mv report_coverage/htmlcov/index.html Reportes/reporte-sonar.html  # Mover el reporte HTML a la carpeta de reportes
 
-      # Paso 11: Configurar Git para publicar en GitHub Pages
+      # Paso 10: Configurar Git para publicar en GitHub Pages
       - name: Configure Git for GitHub Pages
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-      # Paso 12: Publicar el reporte en GitHub Pages
+      # Paso 11: Publicar el reporte en GitHub Pages
       - name: Publish report to GitHub Pages
         run: |
           git fetch origin gh-pages  # Obtener la última versión de la rama gh-pages
