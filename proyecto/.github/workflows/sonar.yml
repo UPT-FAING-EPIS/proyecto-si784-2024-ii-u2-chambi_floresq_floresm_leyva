@@ -1,0 +1,53 @@
+name: SonarCloud Analysis
+
+env:
+  PYTHON_VERSION: '3.x'                    # Versión de Python
+  SONAR_ORG: 'jaimeflores'                 # Nombre de tu organización en SonarCloud
+  SONAR_PROJECT: 'jaimeflores_flaskapp'    # Key del proyecto en SonarCloud
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  sonarqube:
+    name: SonarCloud Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Clonar el código
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Configurar Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      # 3. Instalar dependencias
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov  # Para generar cobertura de código
+
+      # 4. Ejecutar pruebas y generar cobertura
+      - name: Run tests and generate coverage
+        run: |
+          pytest --cov=./ --cov-report=xml
+
+      # 5. Iniciar análisis con SonarCloud
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        with:
+          args: >
+            -Dsonar.projectKey=${{ env.SONAR_PROJECT }}
+            -Dsonar.organization=${{ env.SONAR_ORG }}
+            -Dsonar.sources=.
+            -Dsonar.exclusions=**/__pycache__/**,myenv/**
+            -Dsonar.python.coverage.reportPaths=coverage.xml
+          token: ${{ secrets.SONAR_TOKEN }}
