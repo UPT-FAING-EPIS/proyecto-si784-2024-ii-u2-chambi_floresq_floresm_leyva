@@ -70,6 +70,16 @@ jobs:
             -Dsonar.python.coverage.reportPaths=proyecto/report_coverage/coverage.xml \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
+      # Paso 9.0 : Verificar si el directorio htmlcov existe antes de moverlo
+      - name: Check if htmlcov exists
+        run: |
+          if [ -d "proyecto/report_coverage/htmlcov" ]; then
+            echo "htmlcov directory exists."
+          else
+            echo "htmlcov directory does not exist. Exiting."
+            exit 1
+          fi
+
       # Paso 9: Crear carpeta de reportes
       - name: Create Reports folder
         run: |
@@ -79,7 +89,7 @@ jobs:
           mv report_coverage/htmlcov/ ../Reportes/  # Mover el reporte HTML a la carpeta de reportes
           # Verificar que htmlcov haya sido generado
           ls -la ../Reportes/
-          ls -la ../Reportes/htmlcov
+          ls -la ../Reportes/htmlcov/
 
       # Paso 10: Configurar Git para publicar en GitHub Pages
       - name: Configure Git for GitHub Pages
