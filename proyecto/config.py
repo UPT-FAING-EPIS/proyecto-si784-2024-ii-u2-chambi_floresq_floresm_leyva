@@ -1,0 +1,5 @@
+server = 'DESKTOP-UQQRNID'
+database = 'CasaDeCambioDB'
+username = 'sa'
+password = 'sa'
+driver = '{ODBC Driver 17 for SQL Server}'
