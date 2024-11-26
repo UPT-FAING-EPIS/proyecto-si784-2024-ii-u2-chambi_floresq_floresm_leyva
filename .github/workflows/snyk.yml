@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      
+
 jobs:
   snyk-analysis:
     runs-on: ubuntu-latest
@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r requirements.txt
+            pip install -r proyecto/requirements.txt
 
       - name: Install Snyk
         run: npm install -g snyk
