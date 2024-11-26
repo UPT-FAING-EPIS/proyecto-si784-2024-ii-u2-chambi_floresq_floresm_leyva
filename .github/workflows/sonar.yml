@@ -99,7 +99,13 @@ jobs:
             echo "htmlcov directory does not exist. Exiting."
             exit 1
           fi  
-
+      
+      # Paso 10.0 : Eliminar .gitignore en htmlcov (si existe)
+      - name: Remove .gitignore from htmlcov
+        run: |
+          if [ -f "proyecto/Reportes/htmlcov/.gitignore" ]; then
+            rm -f proyecto/Reportes/htmlcov/.gitignore
+          fi
 
       # Paso 10: Configurar Git para publicar en GitHub Pages
       - name: Configure Git for GitHub Pages
