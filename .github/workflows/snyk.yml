@@ -1,0 +1,35 @@
+name: CI with Snyk
+
+on:
+  push:
+    branches:
+      - main
+      
+jobs:
+  snyk-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Install Snyk
+        run: npm install -g snyk
+
+      - name: Authenticate with Snyk
+        run: snyk auth ${{ secrets.SNYK_TOKEN }}
+
+      - name: Run Snyk test
+        run: snyk test
+
+      - name: Monitor project with Snyk
+        run: snyk monitor
