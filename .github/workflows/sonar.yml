@@ -77,6 +77,9 @@ jobs:
           mkdir -p ../Reportes  # Crear el directorio si no existe
           # Mover el reporte HTML
           mv report_coverage/htmlcov/ ../Reportes/  # Mover el reporte HTML a la carpeta de reportes
+          # Verificar que htmlcov haya sido generado
+          ls -la ../Reportes/
+          ls -la ../Reportes/htmlcov
 
       # Paso 10: Configurar Git para publicar en GitHub Pages
       - name: Configure Git for GitHub Pages
