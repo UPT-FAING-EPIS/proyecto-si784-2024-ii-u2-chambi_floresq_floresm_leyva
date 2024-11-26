@@ -23,18 +23,18 @@ jobs:
     # Paso 3: Instalar dependencias
     - name: Install dependencies
       run: |
-        pip install -r requirements.txt
+        pip install -r proyecto/requirements.txt
 
     # Paso 4: Ejecutar pruebas con cobertura
     - name: Run tests with coverage
       run: |
-        # Cambiar al directorio 'proyecto' para ejecutar las pruebas
         cd proyecto
         pytest --cov=. --cov-report=xml:report_coverage/coverage.xml
 
     # Paso 5: Subir resultados de cobertura a SonarCloud
     - name: Run SonarCloud Analysis
       run: |
+        cd proyecto
         sonar-scanner -Dsonar.projectKey=jaimeflores_flaskapp \
           -Dsonar.organization=jaimeflores \
           -Dsonar.host.url=https://sonarcloud.io \
