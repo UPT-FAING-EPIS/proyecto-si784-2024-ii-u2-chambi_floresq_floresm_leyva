@@ -29,23 +29,21 @@ def test_get_account_balances_no_user(mock_database_connection):
     balances = AccountManager.get_account_balances(999)  # Usuario no existente
     assert balances is None
 
-"""
 def test_update_balances_success(mock_database_connection):
     # Prueba que se actualizan los balances correctamente cuando hay suficientes fondos
     mock_cursor = mock_database_connection.return_value.cursor.return_value
-    mock_cursor.fetchone.side_effect = [Decimal("1000.00"), Decimal("500.00")]  # Balances iniciales
+    mock_cursor.fetchone.side_effect = [(Decimal("1000.00"),), (Decimal("500.00"),)]  # Balances iniciales
     
     result = AccountManager.update_balances(1, "USD", "EUR", Decimal("100.00"), Decimal("90.00"))
     
     assert result is True
-    mock_cursor.execute.assert_any_call("UPDATE Accounts SET BalanceUSD = ? WHERE UserId = ?", Decimal("900.00"), 1)
-    mock_cursor.execute.assert_any_call("UPDATE Accounts SET BalanceEUR = ? WHERE UserId = ?", Decimal("590.00"), 1)
-"""
+    mock_cursor.execute.assert_any_call("UPDATE Accounts SET BalanceUSD = ? WHERE UserId = ?", (Decimal("900.00"), 1))
+    mock_cursor.execute.assert_any_call("UPDATE Accounts SET BalanceEUR = ? WHERE UserId = ?", (Decimal("590.00"), 1))
 
 def test_update_balances_insufficient_funds(mock_database_connection):
     # Prueba que la actualización falla si los fondos son insuficientes
     mock_cursor = mock_database_connection.return_value.cursor.return_value
-    mock_cursor.fetchone.side_effect = [Decimal("50.00"), Decimal("500.00")]  # Saldo insuficiente
+    mock_cursor.fetchone.side_effect = [(Decimal("50.00"),), (Decimal("500.00"),)]  # Simular retorno como tupla
     
     result = AccountManager.update_balances(1, "USD", "EUR", Decimal("100.00"), Decimal("90.00"))
     

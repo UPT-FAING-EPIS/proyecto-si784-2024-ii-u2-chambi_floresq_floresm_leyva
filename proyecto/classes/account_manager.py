@@ -30,7 +30,7 @@ class AccountManager:
                 raise ValueError("No se encontró la cuenta del usuario.")
             
             # Ahora balance_origen es un Decimal directamente
-            balance_origen = Decimal(balance_origen)  # Aquí no necesitas [0]
+            balance_origen = Decimal(balance_origen[0])  # Aquí no necesitas [0]
 
             if balance_origen >= monto:
                 nuevo_balance_origen = balance_origen - monto
@@ -47,7 +47,7 @@ class AccountManager:
                 if balance_destino is None:
                     raise ValueError("No se encontró la cuenta de destino.")
                 
-                balance_destino = Decimal(balance_destino)  # Aquí tampoco necesitas [0]
+                balance_destino = Decimal(balance_destino[0])  # Aquí tampoco necesitas [0]
                 nuevo_balance_destino = balance_destino + monto_convertido
                 
                 # Actualiza el balance de la divisa de destino
