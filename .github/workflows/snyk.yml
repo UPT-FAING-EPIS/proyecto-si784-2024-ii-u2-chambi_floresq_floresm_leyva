@@ -59,8 +59,7 @@ jobs:
       - name: Snyk Open Source monitor
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        working-directory: ProyectoFinal
-        run: snyk monitor
+        run: snyk monitor --file=proyecto/requirements.txt
 
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v3
