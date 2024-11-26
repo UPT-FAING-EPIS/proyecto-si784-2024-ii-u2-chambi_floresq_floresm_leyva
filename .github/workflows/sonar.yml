@@ -30,13 +30,12 @@ jobs:
         sudo apt install -y openjdk-17-jdk
         java -version  # Verifica que Java 17 se haya instalado correctamente
 
-    # Paso 4: Descargar e instalar SonarScanner usando curl
-    - name: Download and Install SonarScanner
+    # Paso 4: Descargar y descomprimir SonarScanner
+    - name: Download and extract SonarScanner
       run: |
         curl -L "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.2.1.4610-linux.zip?_gl=1*1w5bzw5*_gcl_au*NzE5ODE3Njc5LjE3MjY0NjU2NjU.*_ga*MTExNDQ5MzM2NC4xNzI2NDY1NjY2*_ga_9JZ0GZ5TC6*MTczMjYzOTkxNy40LjAuMTczMjYzOTkxNy42MC4wLjA." -o sonar-scanner-linux.zip
-        unzip sonar-scanner-linux.zip
-        sudo mv sonar-scanner-6.2.1.4610-linux /opt/sonar-scanner
-        sudo ln -s /opt/sonar-scanner/bin/sonar-scanner /usr/local/bin/sonar-scanner
+        unzip sonar-scanner-linux.zip -d /opt
+        sudo ln -s /opt/sonar-scanner-6.2.1.4610-linux/bin/sonar-scanner /usr/local/bin/sonar-scanner
         sonar-scanner --version  # Verifica que SonarScanner esté correctamente instalado
 
     # Paso 5: Configurar Python
