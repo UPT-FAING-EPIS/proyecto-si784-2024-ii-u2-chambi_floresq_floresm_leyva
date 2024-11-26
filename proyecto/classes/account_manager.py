@@ -7,7 +7,7 @@ class AccountManager:
         try:
             conn = Database.get_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT BalanceUSD, BalanceEUR, BalancePEN FROM Accounts WHERE UserId = ?", user_id)
+            cursor.execute("SELECT BalanceUSD, BalanceEUR, BalancePEN FROM Accounts WHERE UserId = ?", (user_id,))
             return cursor.fetchone()
         finally:
             if 'cursor' in locals() and cursor is not None:
@@ -21,24 +21,47 @@ class AccountManager:
             conn = Database.get_connection()
             cursor = conn.cursor()
             
-            cursor.execute(f"SELECT Balance{divisa_origen} FROM Accounts WHERE UserId = ?", user_id)
-            balance_origen = Decimal(cursor.fetchone()[0])
+            # Obtener el balance de la divisa de origen
+            cursor.execute(f"SELECT Balance{divisa_origen} FROM Accounts WHERE UserId = ?", (user_id,))
+            balance_origen = cursor.fetchone()
+
+            # Verifica si se encontró el balance
+            if balance_origen is None:
+                raise ValueError("No se encontró la cuenta del usuario.")
             
+            # Ahora balance_origen es un Decimal directamente
+            balance_origen = Decimal(balance_origen)  # Aquí no necesitas [0]
+
             if balance_origen >= monto:
                 nuevo_balance_origen = balance_origen - monto
-                cursor.execute(f"UPDATE Accounts SET Balance{divisa_origen} = ? WHERE UserId = ?", 
-                             nuevo_balance_origen, user_id)
                 
-                cursor.execute(f"SELECT Balance{divisa_destino} FROM Accounts WHERE UserId = ?", user_id)
-                balance_destino = Decimal(cursor.fetchone()[0])
+                # Actualiza el balance de la divisa de origen
+                cursor.execute(f"UPDATE Accounts SET Balance{divisa_origen} = ? WHERE UserId = ?", 
+                            (nuevo_balance_origen, user_id))
+                
+                # Obtener el balance de la divisa de destino
+                cursor.execute(f"SELECT Balance{divisa_destino} FROM Accounts WHERE UserId = ?", (user_id,))
+                balance_destino = cursor.fetchone()
+                
+                # Verifica si se encontró el balance de destino
+                if balance_destino is None:
+                    raise ValueError("No se encontró la cuenta de destino.")
+                
+                balance_destino = Decimal(balance_destino)  # Aquí tampoco necesitas [0]
                 nuevo_balance_destino = balance_destino + monto_convertido
+                
+                # Actualiza el balance de la divisa de destino
                 cursor.execute(f"UPDATE Accounts SET Balance{divisa_destino} = ? WHERE UserId = ?", 
-                             nuevo_balance_destino, user_id)
+                            (nuevo_balance_destino, user_id))
                 
                 conn.commit()
                 return True
-            return False
             
+            return False
+
+        except Exception as e:
+            return {"error": str(e)}
+        
         finally:
             if 'cursor' in locals() and cursor is not None:
                 cursor.close()

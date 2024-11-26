@@ -18,6 +18,10 @@ class TransactionManager:
             conn.commit()
             return True
             
+        except Exception as e:
+            # Manejo de excepciones: devolver un mensaje de error
+            return {"error": str(e)}
+        
         finally:
             if 'cursor' in locals() and cursor is not None:
                 cursor.close()
@@ -29,8 +33,13 @@ class TransactionManager:
         try:
             conn = Database.get_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM Transactions WHERE UserId = ? ORDER BY TransactionDate DESC", user_id)
+            cursor.execute("SELECT * FROM Transactions WHERE UserId = ? ORDER BY TransactionDate DESC", (user_id,))
             return cursor.fetchall()
+        
+        except Exception as e:
+            # Manejo de excepciones: devolver un mensaje de error
+            return {"error": str(e)}
+        
         finally:
             if 'cursor' in locals() and cursor is not None:
                 cursor.close()
