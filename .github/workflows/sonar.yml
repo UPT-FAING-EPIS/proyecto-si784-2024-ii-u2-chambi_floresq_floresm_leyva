@@ -49,5 +49,5 @@ jobs:
         sonar-scanner -Dsonar.projectKey=jaimeflores_flaskapp \
           -Dsonar.organization=jaimeflores \
           -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.python.coverage.reportPaths=proyecto/report_coverage/coverage.xml \
+          -Dsonar.python.coverage.reportPaths=report_coverage/coverage.xml \
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
