@@ -19,7 +19,6 @@
 *.pyo
 *.pyd
 *.db
-*.sql
 *.sqlite
 *.suo
 *.user
