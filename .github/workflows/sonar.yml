@@ -118,7 +118,7 @@ jobs:
         run: |
           git fetch origin gh-pages  # Obtener la última versión de la rama gh-pages
           git checkout gh-pages  # Cambiar a la rama gh-pages
-          cp -r ../Reportes/htmlcov ./  # Copiar todo el directorio htmlcov a la rama gh-pages
+          cp -r proyecto/report_coverage/htmlcov ./  # Copiar todo el directorio htmlcov a la rama gh-pages
           git add htmlcov  # Asegúrate de agregar todo el contenido del directorio htmlcov
           git commit -m "Publishing SonarCloud coverage report and htmlcov" || echo "No changes to commit"  # Confirmar los cambios si los hay
           git push origin gh-pages  # Publicar sin usar --force
