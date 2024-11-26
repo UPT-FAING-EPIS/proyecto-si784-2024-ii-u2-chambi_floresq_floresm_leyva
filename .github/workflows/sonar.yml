@@ -17,45 +17,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Paso 2: Instalar herramientas de compilación necesarias para pyodbc
-      - name: Install build dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y build-essential unixodbc-dev
-
-      # Paso 3: Instalar Java 17
-      - name: Install Java 17
-        run: |
-          sudo apt update
-          sudo apt install -y openjdk-17-jdk
-          java -version  # Verifica que Java 17 se haya instalado correctamente
-
-      # Paso 4: Descargar y descomprimir SonarScanner
-      - name: Download and extract SonarScanner
-        run: |
-          curl -L "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.2.1.4610-linux-x64.zip" -o sonar-scanner-linux.zip
-          unzip sonar-scanner-linux.zip -d /opt
-          sudo ln -s /opt/sonar-scanner-6.2.1.4610-linux-x64/bin/sonar-scanner /usr/local/bin/sonar-scanner
-          sonar-scanner --version  # Verifica que SonarScanner esté correctamente instalado
-
-      # Paso 5: Configurar Python
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-
-      # Paso 6: Instalar dependencias
+      # Paso 2: Instalar dependencias
       - name: Install dependencies
         run: |
           pip install -r proyecto/requirements.txt
 
-      # Paso 7: Ejecutar pruebas con cobertura
+      # Paso 3: Ejecutar pruebas con cobertura y generar XML + HTML
       - name: Run tests with coverage
         run: |
           cd proyecto
-          pytest --cov=. --cov-report=xml:report_coverage/coverage.xml
+          pytest --cov=. --cov-report=xml:report_coverage/coverage.xml --cov-report=html:report_coverage/html_report
 
-      # Paso 8: Ejecutar análisis en SonarCloud
+      # Paso 4: Ejecutar análisis en SonarCloud
       - name: Run SonarCloud Analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -67,26 +40,19 @@ jobs:
             -Dsonar.python.coverage.reportPaths=proyecto/report_coverage/coverage.xml \
             -Dsonar.login=${{ secrets.SONAR_TOKEN }}
 
-      # Paso 9: Convertir coverage.xml a HTML usando cobertura.py
-      - name: Convert coverage.xml to HTML
-        run: |
-          # Instalar cobertura.py para convertir coverage.xml a HTML
-          pip install coverage
-          coverage html -d cobertura_html  # Convertir el archivo coverage.xml a HTML
-
-      # Paso 10: Crear carpeta de reportes
+      # Paso 5: Crear carpeta de reportes
       - name: Create Reports folder
         run: |
           mkdir -p Reportes  # Crear el directorio si no existe
-          mv cobertura_html/index.html Reportes/reporte-sonar.html  # Mover el reporte HTML a la carpeta de reportes
+          mv proyecto/report_coverage/html_report/index.html Reportes/reporte-sonar.html  # Mover el reporte HTML a la carpeta de reportes
 
-      # Paso 11: Configurar Git para publicar en GitHub Pages
+      # Paso 6: Configurar Git para publicar en GitHub Pages
       - name: Configure Git for GitHub Pages
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-      # Paso 12: Publicar el reporte en GitHub Pages
+      # Paso 7: Publicar el reporte en GitHub Pages
       - name: Publish report to GitHub Pages
         run: |
           git fetch origin gh-pages  # Obtener la última versión de la rama gh-pages
