@@ -30,7 +30,7 @@ jobs:
         sudo apt install -y openjdk-17-jdk
         java -version  # Verifica que Java 17 se haya instalado correctamente
 
-    # Paso 4: Instalar SonarScanner
+    # Paso 4: Instalar SonarScanner 6.2.1 para Linux
     - name: Install SonarScanner 6.2.1
       run: |
         wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.2.1.4610-linux.zip
