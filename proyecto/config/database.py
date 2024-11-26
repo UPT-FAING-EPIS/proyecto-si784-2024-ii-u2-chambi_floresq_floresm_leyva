@@ -6,7 +6,7 @@ class Database:
         connection_string = (
             "DRIVER={ODBC Driver 17 for SQL Server};"
             "SERVER=.;"
-            "DATABASE=CasaDeCambioDB;"
+            "DATABASE=CasaDeCambioDBTest;"
             "UID=sa;"
             "PWD=sa"
         )
