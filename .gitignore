@@ -93,3 +93,4 @@ ehthumbs.db
 # Allow SqlServerTypes folder and files
 !ProyectoFinal/SqlServerTypes/
 !ProyectoFinal/SqlServerTypes/*/
+!proyecto/report_coverage/*/
