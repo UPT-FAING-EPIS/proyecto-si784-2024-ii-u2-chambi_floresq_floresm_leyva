@@ -3,5 +3,5 @@ projectKey=jaimeflores_flaskapp
 serverUrl=https://sonarcloud.io
 serverVersion=8.0.0.58087
 dashboardUrl=https://sonarcloud.io/dashboard?id=jaimeflores_flaskapp
-ceTaskId=AZNphhzHFNXgINXgZss_
-ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZNphhzHFNXgINXgZss_
+ceTaskId=AZNp2jznohO6yuSJFOS1
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZNp2jznohO6yuSJFOS1
