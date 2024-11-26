@@ -26,16 +26,18 @@ jobs:
     # Paso 3: Instalar Java 17
     - name: Install Java 17
       run: |
-        sudo apt-get update
-        sudo apt-get install -y openjdk-17-jdk
+        sudo apt update
+        sudo apt install -y openjdk-17-jdk
+        java -version  # Verifica que Java 17 se haya instalado correctamente
 
     # Paso 4: Instalar SonarScanner
-    - name: Install SonarScanner
+    - name: Install SonarScanner 6.2.1
       run: |
-        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
-        unzip sonar-scanner-cli-4.8.0.2856-linux.zip
-        sudo mv sonar-scanner-4.8.0.2856-linux /opt/sonar-scanner
+        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.2.1.4610-linux.zip
+        unzip sonar-scanner-cli-6.2.1.4610-linux.zip
+        sudo mv sonar-scanner-6.2.1.4610-linux /opt/sonar-scanner
         sudo ln -s /opt/sonar-scanner/bin/sonar-scanner /usr/local/bin/sonar-scanner
+        sonar-scanner --version  # Verifica que SonarScanner esté correctamente instalado
 
     # Paso 5: Configurar Python
     - name: Set up Python
