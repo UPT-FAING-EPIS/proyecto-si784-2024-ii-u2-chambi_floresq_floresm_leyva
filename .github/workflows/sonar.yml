@@ -23,24 +23,33 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y build-essential unixodbc-dev
 
-    # Paso 3: Configurar Python
+    # Paso 3: Instalar sonar-scanner
+    - name: Install SonarScanner
+      run: |
+        sudo apt-get install -y wget openjdk-11-jdk
+        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.8.0.2856-linux.zip
+        unzip sonar-scanner-cli-4.8.0.2856-linux.zip
+        sudo mv sonar-scanner-4.8.0.2856-linux /opt/sonar-scanner
+        sudo ln -s /opt/sonar-scanner/bin/sonar-scanner /usr/local/bin/sonar-scanner
+
+    # Paso 4: Configurar Python
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.x'
 
-    # Paso 4: Instalar dependencias
+    # Paso 5: Instalar dependencias
     - name: Install dependencies
       run: |
         pip install -r proyecto/requirements.txt
 
-    # Paso 5: Ejecutar pruebas con cobertura
+    # Paso 6: Ejecutar pruebas con cobertura
     - name: Run tests with coverage
       run: |
         cd proyecto
         pytest --cov=. --cov-report=xml:report_coverage/coverage.xml
 
-    # Paso 6: Subir resultados de cobertura a SonarCloud
+    # Paso 7: Subir resultados de cobertura a SonarCloud
     - name: Run SonarCloud Analysis
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -49,5 +58,5 @@ jobs:
         sonar-scanner -Dsonar.projectKey=jaimeflores_flaskapp \
           -Dsonar.organization=jaimeflores \
           -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.python.coverage.reportPaths=report_coverage/coverage.xml \
+          -Dsonar.python.coverage.reportPaths=proyecto/report_coverage/coverage.xml \
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
