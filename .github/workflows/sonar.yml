@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   sonarcloud-analysis:
@@ -14,29 +17,37 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    # Paso 2: Configurar Python
+    # Paso 2: Instalar herramientas de compilación necesarias para pyodbc
+    - name: Install build dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential unixodbc-dev
+
+    # Paso 3: Configurar Python
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.x'
 
-    # Paso 3: Instalar dependencias
+    # Paso 4: Instalar dependencias
     - name: Install dependencies
       run: |
         pip install -r proyecto/requirements.txt
 
-    # Paso 4: Ejecutar pruebas con cobertura
+    # Paso 5: Ejecutar pruebas con cobertura
     - name: Run tests with coverage
       run: |
         cd proyecto
         pytest --cov=. --cov-report=xml:report_coverage/coverage.xml
 
-    # Paso 5: Subir resultados de cobertura a SonarCloud
+    # Paso 6: Subir resultados de cobertura a SonarCloud
     - name: Run SonarCloud Analysis
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       run: |
         cd proyecto
         sonar-scanner -Dsonar.projectKey=jaimeflores_flaskapp \
           -Dsonar.organization=jaimeflores \
           -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.python.coverage.reportPaths=proyecto/report_coverage/coverage.xml
+          -Dsonar.python.coverage.reportPaths=proyecto/report_coverage/coverage.xml \
           -Dsonar.login=${{ secrets.SONAR_TOKEN }}
