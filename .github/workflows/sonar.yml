@@ -83,6 +83,12 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      # Guardar los cambios locales antes del checkout
+      - name: Commit local changes
+        run: |
+          git add .  # Agrega los cambios
+          git commit -m "Saving analysis reports" || echo "No changes to commit"  # Confirmar los cambios si los hay
           
       # Paso 11: Publicar el reporte en GitHub Pages
       - name: Publish report to GitHub Pages
