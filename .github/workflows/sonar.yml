@@ -73,6 +73,7 @@ jobs:
       # Paso 9: Crear carpeta de reportes
       - name: Create Reports folder
         run: |
+          cd proyecto
           mkdir -p Reportes  # Crear el directorio si no existe
           # Mover el reporte HTML
           mv report_coverage/htmlcov/index.html Reportes/reporte-sonar.html  # Mover el reporte HTML a la carpeta de reportes
