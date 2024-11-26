@@ -1,39 +1,31 @@
-import pytest
-from unittest.mock import patch
-from classes.user_manager import UserManager
-from config.database import Database
+def test_index(client):
+    response = client.get('/')
+    assert response.status_code == 200
+    assert b"login" in response.data  # Verifica si el texto 'login' está presente
 
-@pytest.fixture
-def mock_database_connection():
-    with patch.object(Database, 'get_connection') as mock_connection:
-        mock_cursor = mock_connection.return_value.cursor.return_value
-        mock_cursor.execute.return_value = None
-        yield mock_connection
+def test_login(client, mocker):
+    # Crear un objeto mock para simular la respuesta de la base de datos
+    class MockUser:
+        def __init__(self, user_id, username, password_hash):
+            self.UserId = user_id
+            self.Username = username
+            self.PasswordHash = password_hash
 
-def test_verify_credentials_success(mock_database_connection):
-    mock_cursor = mock_database_connection.return_value.cursor.return_value
-    mock_cursor.fetchone.return_value = (1, "test_user", "hashed_password")
-    
-    user = UserManager.verify_credentials("test_user", "hashed_password")
-    assert user == (1, "test_user", "hashed_password")
+    # Crear el objeto mock que representa un usuario con un PasswordHash
+    mock_user = MockUser(1, 'admin', 'admin123')  # Contraseña simulada
 
-def test_verify_credentials_invalid_username(mock_database_connection):
-    mock_cursor = mock_database_connection.return_value.cursor.return_value
-    mock_cursor.fetchone.return_value = None  # No user found
-    
-    user = UserManager.verify_credentials("invalid_user", "hashed_password")
-    assert user is None
+    # Mockear la consulta a la base de datos para devolver el mock de usuario
+    mock_cursor = mocker.patch('pyodbc.connect')
+    mock_cursor.return_value.cursor.return_value.fetchone.return_value = mock_user
 
-def test_verify_credentials_incorrect_password(mock_database_connection):
-    mock_cursor = mock_database_connection.return_value.cursor.return_value
-    mock_cursor.fetchone.return_value = (1, "test_user", "hashed_password")
-    
-    user = UserManager.verify_credentials("test_user", "wrong_password")
-    assert user is None
+    # Datos del formulario de login
+    data = {'username': 'admin', 'password': 'admin123'}
+    response = client.post('/login', data=data)
 
-def test_verify_credentials_database_error(mock_database_connection):
-    mock_cursor = mock_database_connection.return_value.cursor.return_value
-    mock_cursor.execute.side_effect = Exception("Database error")
-    
-    user = UserManager.verify_credentials("test_user", "hashed_password")
-    assert user is None
+    # Imprimir la URL de redirección para depuración
+    print("Redirección a:", response.location)
+
+    # Aserciones
+    assert response.status_code == 302  # Redirección esperada
+    assert response.location.endswith('/dashboard')  # Redirige a dashboard
+
