@@ -29,7 +29,7 @@ jobs:
         run: snyk auth ${{ secrets.SNYK_TOKEN }}
 
       - name: Run Snyk test
-        run: snyk test
+        run: snyk test --file=proyecto/requirements.txt
 
       - name: Monitor project with Snyk
-        run: snyk monitor
+        run: snyk monitor --file=proyecto/requirements.txt
