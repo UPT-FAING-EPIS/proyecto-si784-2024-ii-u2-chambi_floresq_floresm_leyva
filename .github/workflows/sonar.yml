@@ -95,7 +95,7 @@ jobs:
         run: |
           git fetch origin gh-pages  # Obtener la última versión de la rama gh-pages
           git checkout gh-pages  # Cambiar a la rama gh-pages
-          cp Reportes/reporte-sonar.html reporte-sonar.html  # Copiar el archivo a la rama gh-pages
+          cp proyecto/Reportes/reporte-sonar.html reporte-sonar.html  # Copiar el archivo a la rama gh-pages
           git add reporte-sonar.html
           git commit -m "Publishing SonarCloud coverage report as reporte-sonar.html" || echo "No changes to commit"  # Manejo de caso si no hay cambios
           git push origin gh-pages  # Publicar sin usar --force
