@@ -91,15 +91,6 @@ jobs:
           ls -la ../Reportes/
           ls -la ../Reportes/htmlcov/
 
-      # Paso 9.1 : Verificar si el directorio htmlcov existe antes de moverlo
-      - name: Check if htmlcov exists
-        run: |
-          if [ -d "../Reportes/htmlcov/" ]; then
-            echo "htmlcov directory exists."
-          else
-            echo "htmlcov directory does not exist. Exiting."
-            exit 1
-          fi
 
       # Paso 10: Configurar Git para publicar en GitHub Pages
       - name: Configure Git for GitHub Pages
