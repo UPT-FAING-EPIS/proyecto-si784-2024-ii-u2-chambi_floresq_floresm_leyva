@@ -2,18 +2,26 @@ from config.database import Database
 from decimal import Decimal
 
 class AccountManager:
-    @staticmethod
     def get_account_balances(user_id):
+        conn = None
+        cursor = None
         try:
             conn = Database.get_connection()
             cursor = conn.cursor()
-            cursor.execute("SELECT BalanceUSD, BalanceEUR, BalancePEN FROM Accounts WHERE UserId = ?", (user_id,))
+            cursor.execute(
+                "SELECT BalanceUSD, BalanceEUR, BalancePEN FROM Accounts WHERE UserId = ?",
+                (user_id,)
+            )
             return cursor.fetchone()
+        except Exception as e:
+            print(f"Error al obtener los balances: {e}")
+            return None
         finally:
-            if 'cursor' in locals() and cursor is not None:
+            if cursor is not None:
                 cursor.close()
-            if 'conn' in locals() and conn is not None:
+            if conn is not None:
                 conn.close()
+
 
     @staticmethod
     def update_balances(user_id, divisa_origen, divisa_destino, monto, monto_convertido):
