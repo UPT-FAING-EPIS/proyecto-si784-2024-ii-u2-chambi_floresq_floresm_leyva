@@ -96,3 +96,4 @@ ehthumbs.db
 !proyecto/report_coverage/*/
 !proyecto/Tests_BDD/*/
 !pytest.ini
+!behave.ini
