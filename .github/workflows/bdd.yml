@@ -31,7 +31,6 @@ jobs:
         run: |
           npm install -g allure-commandline --save-dev  # Instalar Allure Commandline
 
-
       - name: List project files for debugging
         run: |
           cd proyecto/Tests_BDD
@@ -51,6 +50,15 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
+
+      - name: Ignore Allure report files from Git tracking
+        run: |
+          echo "proyecto/Tests_BDD/allure-report/" >> .gitignore  # Añadir allure-report a .gitignore
+
+      - name: Commit .gitignore update
+        run: |
+          git add .gitignore  # Agregar .gitignore modificado
+          git commit -m "Add allure-report directory to .gitignore" || echo "No changes to commit"
 
       - name: Deploy Allure report to GitHub Pages
         run: |
