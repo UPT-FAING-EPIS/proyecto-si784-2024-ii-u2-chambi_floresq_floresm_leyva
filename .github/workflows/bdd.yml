@@ -48,32 +48,20 @@ jobs:
 
       - name: Create Reports folder
         run: |
-          mkdir -p proyecto/Reportes  # Crear el directorio si no existe
-          mv proyecto/Tests_BDD/allure-report/ proyecto/Reportes/  # Mover el reporte HTML generado
-
-      - name: Remove .gitignore from htmlcov
-        run: |
-            if [ -f "proyecto/Reportes/allure-report/.gitignore" ]; then
-                rm -f proyecto/Reportes/allure-report/.gitignore
-            fi
-
+          mkdir -p ../Reportes  # Crear el directorio si no existe
+          mv proyecto/Tests_BDD/allure-report/ ../Reportes/  # Mover el reporte HTML generado
 
       - name: Set up Git for deployment
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-      # Guardar los cambios locales antes del checkout
-      - name: Commit local changes
-        run: |
-          git add .  # Agrega los cambios
-          git commit -m "Saving analysis reports" || echo "No changes to commit"  # Confirmar los cambios si los hay
-
       - name: Deploy Reports folder to GitHub Pages
         run: |
-          git fetch origin gh-pages  # Obtiene la última versión de la rama gh-pages
-          git checkout gh-pages  # Cambia a la rama gh-pages
-          cp -r proyecto/Reportes/* .  # Copia el contenido de la carpeta Reportes
+          git fetch origin gh-pages || echo "No previous gh-pages branch"
+          git checkout gh-pages || git checkout -b gh-pages
+          git pull origin gh-pages || echo "No changes to pull from gh-pages"
+          cp -r ../Reportes/* .  # Copia el contenido de la carpeta Reportes
           git add .  # Agrega todos los archivos copiados
           git commit -m "Deploy Allure report to gh-pages" || echo "No changes to commit"  # Manejo de caso si no hay cambios
           git push origin gh-pages  # Publica los cambios en la rama gh-pages
