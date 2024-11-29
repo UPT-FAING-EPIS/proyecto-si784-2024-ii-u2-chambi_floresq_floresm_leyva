@@ -27,14 +27,19 @@ jobs:
         run: |
           pip install allure-behave
 
+      - name: List project files for debugging
+        run: |
+          cd Proyecto/Tests_BDD
+          ls -R  # Verifica la estructura de directorios y archivos
+
       - name: Generate Allure results
         run: |
-          cd proyecto/Tests_BDD
+          cd Proyecto/Tests_BDD
           behave -f allure_behave.formatter:AllureFormatter -o allure-results ./Features
 
       - name: Generate HTML report
         run: |
-          cd proyecto/Tests_BDD
+          cd Proyecto/Tests_BDD
           allure generate allure-results --clean -o allure-report
 
       - name: Set up Git for deployment
@@ -46,7 +51,7 @@ jobs:
         run: |
           git fetch origin gh-pages  # Obtiene la última versión de la rama gh-pages
           git checkout gh-pages  # Cambia a la rama gh-pages
-          cp -r proyecto/Tests_BDD/allure-report/* .
+          cp -r Proyecto/Tests_BDD/allure-report/* .  # Copia el contenido del reporte generado
           git add .  # Agrega todos los archivos copiados
           git commit -m "Deploy Allure report" || echo "No changes to commit"  # Manejo de caso si no hay cambios
           git push origin gh-pages  # Publica los cambios en la rama gh-pages
