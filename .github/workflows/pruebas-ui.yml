@@ -27,14 +27,8 @@ jobs:
           npm install
           npx playwright install  # Instala navegadores necesarios para Playwright
 
-      # Ejecutar pruebas de Playwright
-      - name: Run Playwright tests
-        run: |
-          cd proyecto
-          npx playwright test --reporter=html  # Generar reporte en HTML
-
-      # Crear directorio Reportes
-      - name: Prepare report directory
+      # Mover el reporte directamente a Reportes
+      - name: Move Playwright report to Reportes
         run: |
           mkdir -p ../Reportes  # Crear la carpeta si no existe
           mv proyecto/playwright-report ../Reportes/  # Mover el reporte generado
@@ -49,7 +43,7 @@ jobs:
         run: |
           git fetch origin gh-pages || echo "No previous gh-pages branch"
           git checkout gh-pages || git checkout -b gh-pages
-          git pull origin gh-pages || echo "No changes to pull from gh - pages"
+          git pull origin gh-pages || echo "No changes to pull from gh-pages"
           cp -r ../Reportes/* .  # Copiar contenido del reporte a la raíz
           git add .  # Agregar todos los archivos nuevos
           git commit -m "Deploy Playwright report to gh-pages" || echo "No changes to commit"
