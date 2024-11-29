@@ -1,9 +1,6 @@
 name: Semgrep Analysis
 
-on: 
-  push:
-    branches:
-      - main
+
 
 jobs:
   security:

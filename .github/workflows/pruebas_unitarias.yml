@@ -1,4 +1,4 @@
-name: Generate and Deploy Coverage HTML Report with ReportGenerator
+name: Generate and Deploy HTML Report
 
 on:
   push:
@@ -19,38 +19,25 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.8'
+        python-version: '3.8'  # Usa la versión de Python que necesites
 
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r proyecto/requirements.txt  # Instala dependencias desde requirements.txt
-        pip install pytest pytest-cov  # Instala pytest y pytest-cov para cobertura de pruebas
+        pip install -r proyecto/requirements.txt
+        pip install pytest pytest-cov
 
-    - name: Run tests and generate Cobertura XML coverage report
+    - name: Run tests and generate HTML coverage report
       run: |
-        cd proyecto  # Cambia al directorio de tu proyecto
-        pytest --cov=. tests/ --cov-report=xml:tests/test_reports/coverage.xml  # Genera el reporte de cobertura en formato XML
+        cd proyecto  # Cambia al directorio del proyecto si es necesario
+        pytest --cov=. tests/ --cov-report=html:./htmlcov  # Genera el reporte de cobertura en HTML
 
-    - name: Set up .NET SDK (for ReportGenerator)
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '7.0'  # Usa la versión más reciente de .NET, o la que necesites
-
-    - name: Install ReportGenerator tool
+    - name: Mover directorio de reporte a Reportes
       run: |
-        dotnet tool install --global dotnet-reportgenerator-globaltool  # Instala la herramienta ReportGenerator
-        echo "$HOME/.dotnet/tools" >> $GITHUB_PATH  # Asegura que ReportGenerator esté en el PATH
-
-    - name: Generate HTML report from XML using ReportGenerator
-      run: |
-        # Ejecuta ReportGenerator para generar el reporte HTML a partir del archivo XML de cobertura
-        ReportGenerator "-reports:tests/test_reports/coverage.xml" "-targetdir:tests/test_reports/Cobertura" -reporttypes:HTML
-
-    - name: Mover el directorio de reportes a Reportes
-      run: |
+        # Crea el directorio "Reportes" en la raíz si no existe
         mkdir -p ../Reportes
-        mv proyecto/tests/test_reports/Cobertura ../Reportes/Cobertura
+        # Mueve el directorio htmlcov a ../Reportes/htmlcov
+        mv proyecto/htmlcov ../Reportes/htmlcov
 
     - name: Configurar Git para publicar en GitHub Pages
       run: |
@@ -59,11 +46,24 @@ jobs:
 
     - name: Prepare gh-pages branch and deploy report
       run: |
+        # Obtiene la última versión de la rama gh-pages
         git fetch origin gh-pages || echo "No previous gh-pages branch"
+        
+        # Si la rama gh-pages existe, realiza un pull para obtener los cambios remotos
         git checkout gh-pages || git checkout -b gh-pages
         git pull origin gh-pages || echo "No changes to pull from gh-pages"
+
+        # Crea un directorio 'Pruebas-U' si no existe en la rama gh-pages
         mkdir -p Pruebas-U
-        cp -r ../Reportes/Cobertura ./Pruebas-U/Cobertura
-        git add Pruebas-U/Cobertura
-        git commit -m "Publicando reporte de cobertura en formato HTML dentro de Pruebas-U" || echo "No hay cambios para commitear"
+
+        # Mueve el directorio htmlcov dentro de Pruebas-U
+        cp -r ../Reportes/htmlcov ./Pruebas-U/htmlcov
+
+        # Añadir el directorio htmlcov dentro de Pruebas-U a Git
+        git add Pruebas-U/htmlcov
+
+        # Realiza commit si hay cambios
+        git commit -m "Publicando reporte de cobertura de pruebas dentro de Pruebas-U" || echo "No hay cambios para commitear"
+
+        # Empuja los cambios a la rama gh-pages
         git push origin gh-pages

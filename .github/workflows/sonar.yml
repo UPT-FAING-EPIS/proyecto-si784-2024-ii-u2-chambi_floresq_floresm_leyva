@@ -1,12 +1,5 @@
 name: Run SonarCloud Analysis and Deploy Report
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   sonarcloud-analysis:

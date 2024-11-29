@@ -1,9 +1,5 @@
 name: CI with Snyk
 
-on:
-  push:
-    branches:
-      - main
 
 jobs:
   snyk-analysis:
