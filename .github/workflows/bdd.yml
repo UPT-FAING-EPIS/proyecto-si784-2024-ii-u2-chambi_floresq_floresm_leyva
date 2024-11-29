@@ -51,6 +51,13 @@ jobs:
           mkdir -p proyecto/Reportes  # Crear el directorio si no existe
           mv proyecto/Tests_BDD/allure-report/ proyecto/Reportes/  # Mover el reporte HTML generado
 
+      - name: Remove .gitignore from htmlcov
+        run: |
+            if [ -f "proyecto/Reportes/allure-report/.gitignore" ]; then
+                rm -f proyecto/Reportes/allure-report/.gitignore
+            fi
+
+
       - name: Set up Git for deployment
         run: |
           git config --global user.name "GitHub Actions"
