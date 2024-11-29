@@ -35,7 +35,7 @@ jobs:
       - name: Generate Allure results
         run: |
           cd proyecto/Tests_BDD
-          behave --no-skipped -f allure_behave.formatter:AllureFormatter -o allure-results --ignore-undefined ./Features
+          behave -f allure_behave.formatter:AllureFormatter -o allure-results ./Features
 
       - name: Generate HTML report
         run: |
