@@ -23,6 +23,7 @@ jobs:
       # Instalar dependencias de Playwright
       - name: Install dependencies
         run: |
+          cd proyecto
           npm install
           npx playwright install  # Instala navegadores necesarios para Playwright
 
