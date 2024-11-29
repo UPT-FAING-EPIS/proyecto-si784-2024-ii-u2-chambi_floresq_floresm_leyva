@@ -25,19 +25,19 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r proyecto/requirements.txt
-        pip install pytest pytest-html
+        pip install pytest pytest-cov
 
-    - name: Run tests and generate HTML report
+    - name: Run tests and generate HTML coverage report
       run: |
         cd proyecto  # Cambia al directorio del proyecto si es necesario
-        pytest tests/ --html=tests/test_reports/result.html --maxfail=5 --disable-warnings
+        pytest --cov=. tests/ --cov-report=html:./htmlcov  # Genera el reporte de cobertura en HTML
 
-    - name: Mover directorio de reportes a Reportes
+    - name: Mover directorio de reporte a Reportes
       run: |
         # Crea el directorio "Reportes" en la raíz si no existe
         mkdir -p ../Reportes
-        # Mueve el directorio completo tests/test_reports a ../Reportes
-        mv proyecto/tests/test_reports ../Reportes/test_reports
+        # Mueve el directorio htmlcov a ../Reportes/htmlcov
+        mv proyecto/htmlcov ../Reportes/htmlcov
 
     - name: Configurar Git para publicar en GitHub Pages
       run: |
@@ -53,14 +53,17 @@ jobs:
         git checkout gh-pages || git checkout -b gh-pages
         git pull origin gh-pages || echo "No changes to pull from gh-pages"
 
-        # Mueve el directorio test_reports a la raíz de la rama gh-pages
-        cp -r ../Reportes/test_reports ./test_reports
+        # Crea un directorio 'Pruebas-U' si no existe en la rama gh-pages
+        mkdir -p Pruebas-U
 
-        # Añadir el directorio completo a Git
-        git add test_reports
+        # Mueve el directorio htmlcov dentro de Pruebas-U
+        cp -r ../Reportes/htmlcov ./Pruebas-U/htmlcov
+
+        # Añadir el directorio htmlcov dentro de Pruebas-U a Git
+        git add Pruebas-U/htmlcov
 
         # Realiza commit si hay cambios
-        git commit -m "Publicando directorio de reporte de prueba unitaria" || echo "No hay cambios para commitear"
+        git commit -m "Publicando reporte de cobertura de pruebas dentro de Pruebas-U" || echo "No hay cambios para commitear"
 
-        # Empuja el directorio al repositorio remoto en la rama gh-pages
+        # Empuja los cambios a la rama gh-pages
         git push origin gh-pages
