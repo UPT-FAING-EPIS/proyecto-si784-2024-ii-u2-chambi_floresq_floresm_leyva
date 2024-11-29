@@ -29,30 +29,37 @@ jobs:
 
     - name: Run tests and generate HTML report
       run: |
-        cd proyecto 
+        cd proyecto  # Cambia al directorio del proyecto si es necesario
         pytest tests/ --html=tests/test_reports/result.html --maxfail=5 --disable-warnings
 
-    - name: Mover archivo a Reportes
+    - name: Mover directorio de reportes a Reportes
       run: |
-        # Crea el directorio "Reportes" si no existe
+        # Crea el directorio "Reportes" en la raíz si no existe
         mkdir -p ../Reportes
-        # Mueve solo el archivo result.html
-        mv proyecto/tests/test_reports/result.html ../Reportes/result.html
+        # Mueve el directorio completo tests/test_reports a ../Reportes
+        mv proyecto/tests/test_reports ../Reportes/test_reports
 
     - name: Configurar Git para publicar en GitHub Pages
       run: |
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-    - name: Publicar reporte en GitHub Pages
+    - name: Prepare gh-pages branch and deploy report
       run: |
         # Obtiene la última versión de la rama gh-pages
-        git fetch origin gh-pages
-        git checkout gh-pages
-        # Mueve el archivo result.html a la raíz de la rama gh-pages
-        cp ../Reportes/result.html reporte-prueba_unitaria.html
-        git add reporte-prueba_unitaria.html
-        # Si no hay cambios, no hace commit
-        git commit -m "Publicando reporte de prueba unitaria" || echo "No hay cambios para commitear"
-        # Publica los cambios en gh-pages
+        git fetch origin gh-pages || echo "No previous gh-pages branch"
+        
+        # Crea la rama gh-pages si no existe (si es la primera vez)
+        git checkout -b gh-pages || git checkout gh-pages
+
+        # Mueve el directorio test_reports a la raíz de la rama gh-pages
+        cp -r ../Reportes/test_reports ./test_reports
+
+        # Añadir el directorio completo a Git
+        git add test_reports
+
+        # Realiza commit si hay cambios
+        git commit -m "Publicando directorio de reporte de prueba unitaria" || echo "No hay cambios para commitear"
+
+        # Empuja el directorio al repositorio remoto en la rama gh-pages
         git push origin gh-pages
