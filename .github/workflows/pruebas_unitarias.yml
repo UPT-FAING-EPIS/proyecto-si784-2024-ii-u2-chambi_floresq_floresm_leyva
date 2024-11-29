@@ -41,7 +41,7 @@ jobs:
     - name: Run tests and generate Cobertura XML coverage report
       run: |
         cd proyecto  # Cambia al directorio de tu proyecto
-        pytest --cov=. tests/ --cov-report=cobertura:tests/test_reports/coverage.cobertura.xml  # Genera el reporte de cobertura en formato Cobertura
+        pytest --cov=. tests/ --cov-report=xml:tests/test_reports/coverage.cobertura.xml  # Genera el reporte de cobertura en formato Cobertura
 
     - name: Generate HTML report from Cobertura XML using ReportGenerator
       run: |
