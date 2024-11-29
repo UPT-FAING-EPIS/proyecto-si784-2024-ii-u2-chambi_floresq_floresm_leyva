@@ -29,7 +29,7 @@ jobs:
 
     - name: Run tests and generate HTML report
       run: |
-        cd Proyecto  # Si 'Proyecto' es el directorio correcto
+        cd proyecto 
         pytest tests/ --html=tests/test_reports/result.html --maxfail=5 --disable-warnings
 
     - name: Mover archivo a Reportes
@@ -37,7 +37,7 @@ jobs:
         # Crea el directorio "Reportes" si no existe
         mkdir -p ../Reportes
         # Mueve solo el archivo result.html
-        mv Proyecto/tests/test_reports/result.html ../Reportes/result.html
+        mv proyecto/tests/test_reports/result.html ../Reportes/result.html
 
     - name: Configurar Git para publicar en GitHub Pages
       run: |
