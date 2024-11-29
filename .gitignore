@@ -90,7 +90,7 @@ ehthumbs.db
 .env
 .vscode/
 
-# Allow SqlServerTypes folder and files
+# Allow folder and files
 !proyecto/report_coverage/*/
 !proyecto/Tests_BDD/*/
 !pytest.ini
