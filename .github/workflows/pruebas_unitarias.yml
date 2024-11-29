@@ -3,10 +3,10 @@ name: Generate and Deploy Coverage HTML Report with ReportGenerator
 on:
   push:
     branches:
-      - main
+      - main  # O la rama que prefieras
   pull_request:
     branches:
-      - main
+      - main  # O la rama que prefieras
 
 jobs:
   deploy:
@@ -35,7 +35,7 @@ jobs:
     - name: Set up .NET SDK (for ReportGenerator)
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '7.0'
+        dotnet-version: '7.0'  # Usa la versión más reciente de .NET, o la que necesites
 
     - name: Install ReportGenerator tool
       run: |
