@@ -27,6 +27,11 @@ jobs:
         run: |
           pip install allure-behave
 
+      - name: Install Allure Commandline
+        run: |
+          npm install -g allure-commandline --save-dev  # Instalar Allure Commandline
+
+
       - name: List project files for debugging
         run: |
           cd proyecto/Tests_BDD
