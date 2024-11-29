@@ -1,5 +1,5 @@
 -- Crear la base de datos
-CREATE DATABASE CasaDeCambioDB;
+CREATE DATABASE CasaDeCambioDBTest;
 GO
 
 USE CasaDeCambioDB;
