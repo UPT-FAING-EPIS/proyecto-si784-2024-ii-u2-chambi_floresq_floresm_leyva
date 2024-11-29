@@ -3,10 +3,10 @@ name: Generate and Deploy Coverage HTML Report with ReportGenerator
 on:
   push:
     branches:
-      - main  # O la rama que prefieras
+      - main
   pull_request:
     branches:
-      - main  # O la rama que prefieras
+      - main
 
 jobs:
   deploy:
@@ -19,7 +19,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.8'  # Usa la versión de Python que prefieras
+        python-version: '3.8'
 
     - name: Install dependencies
       run: |
@@ -30,29 +30,26 @@ jobs:
     - name: Run tests and generate Cobertura XML coverage report
       run: |
         cd proyecto  # Cambia al directorio de tu proyecto
-        pytest --cov=. tests/ --cov-report=cobertura:tests/test_reports/coverage.cobertura.xml  # Genera el reporte de cobertura en formato Cobertura
+        pytest --cov=. tests/ --cov-report=xml:tests/test_reports/coverage.xml  # Genera el reporte de cobertura en formato XML
 
     - name: Set up .NET SDK (for ReportGenerator)
-      uses: actions/setup-dotnet@v3  # Usa la acción para configurar el SDK de .NET
+      uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '7.0'  # Usa la versión más reciente de .NET, o la que necesites
+        dotnet-version: '7.0'
 
     - name: Install ReportGenerator tool
       run: |
         dotnet tool install --global dotnet-reportgenerator-globaltool  # Instala la herramienta ReportGenerator
-        # Agregar el directorio de herramientas globales de .NET al PATH
-        echo "$HOME/.dotnet/tools" >> $GITHUB_PATH  # Esto asegura que el comando ReportGenerator esté en el PATH
+        echo "$HOME/.dotnet/tools" >> $GITHUB_PATH  # Asegura que ReportGenerator esté en el PATH
 
-    - name: Generate HTML report from Cobertura XML using ReportGenerator
+    - name: Generate HTML report from XML using ReportGenerator
       run: |
         # Ejecuta ReportGenerator para generar el reporte HTML a partir del archivo XML de cobertura
-        ReportGenerator "-reports:tests/test_reports/coverage.cobertura.xml" "-targetdir:tests/test_reports/Cobertura" -reporttypes:HTML
+        ReportGenerator "-reports:tests/test_reports/coverage.xml" "-targetdir:tests/test_reports/Cobertura" -reporttypes:HTML
 
     - name: Mover el directorio de reportes a Reportes
       run: |
-        # Crea el directorio "Reportes" en la raíz si no existe
         mkdir -p ../Reportes
-        # Mueve el directorio con el reporte generado a ../Reportes/Cobertura
         mv proyecto/tests/test_reports/Cobertura ../Reportes/Cobertura
 
     - name: Configurar Git para publicar en GitHub Pages
@@ -62,24 +59,11 @@ jobs:
 
     - name: Prepare gh-pages branch and deploy report
       run: |
-        # Obtiene la última versión de la rama gh-pages
         git fetch origin gh-pages || echo "No previous gh-pages branch"
-        
-        # Si la rama gh-pages existe, realiza un pull para obtener los cambios remotos
         git checkout gh-pages || git checkout -b gh-pages
         git pull origin gh-pages || echo "No changes to pull from gh-pages"
-
-        # Crea un directorio 'Pruebas-U' si no existe en la rama gh-pages
         mkdir -p Pruebas-U
-
-        # Mueve el directorio con el reporte HTML dentro de Pruebas-U
         cp -r ../Reportes/Cobertura ./Pruebas-U/Cobertura
-
-        # Añadir el directorio con el reporte a Git
         git add Pruebas-U/Cobertura
-
-        # Realiza commit si hay cambios
         git commit -m "Publicando reporte de cobertura en formato HTML dentro de Pruebas-U" || echo "No hay cambios para commitear"
-
-        # Empuja los cambios a la rama gh-pages
         git push origin gh-pages
