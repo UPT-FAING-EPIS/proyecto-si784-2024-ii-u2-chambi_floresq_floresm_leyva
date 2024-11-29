@@ -30,7 +30,7 @@ jobs:
       - name: Generate Allure results
         run: |
           cd proyecto/Tests_BDD
-          behave -f allure_behave.formatter:AllureFormatter -o allure-results ./features
+          behave -f allure_behave.formatter:AllureFormatter -o allure-results ./Features
 
       - name: Generate HTML report
         run: |
