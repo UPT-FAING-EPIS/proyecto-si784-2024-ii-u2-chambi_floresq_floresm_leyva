@@ -25,7 +25,7 @@ jobs:
       run: |
         dotnet tool install --global dotnet-reportgenerator-globaltool  # Instala la herramienta ReportGenerator
         # Agregar el directorio de herramientas globales de .NET al PATH
-        echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+        echo "$HOME/.dotnet/tools" >> $GITHUB_PATH  # Esto asegura que el comando ReportGenerator esté en el PATH
 
     - name: Generate HTML report from Cobertura XML using ReportGenerator
       run: |
