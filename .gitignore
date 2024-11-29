@@ -94,3 +94,4 @@ ehthumbs.db
 !ProyectoFinal/SqlServerTypes/
 !ProyectoFinal/SqlServerTypes/*/
 !proyecto/report_coverage/*/
+!pytest.ini
