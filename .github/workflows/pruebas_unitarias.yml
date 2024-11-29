@@ -49,8 +49,9 @@ jobs:
         # Obtiene la última versión de la rama gh-pages
         git fetch origin gh-pages || echo "No previous gh-pages branch"
         
-        # Crea la rama gh-pages si no existe (si es la primera vez)
-        git checkout -b gh-pages || git checkout gh-pages
+        # Si la rama gh-pages existe, realiza un pull para obtener los cambios remotos
+        git checkout gh-pages || git checkout -b gh-pages
+        git pull origin gh-pages || echo "No changes to pull from gh-pages"
 
         # Mueve el directorio test_reports a la raíz de la rama gh-pages
         cp -r ../Reportes/test_reports ./test_reports
