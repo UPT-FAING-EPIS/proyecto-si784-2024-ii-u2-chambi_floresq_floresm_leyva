@@ -35,7 +35,8 @@ jobs:
     - name: Mover directorio de reporte a Reportes
       run: |
         mkdir -p ../Reportes
-        mv proyecto/htmlcov ../Reportes/
+        mkdir -p ../Reportes/Pruebas-Unitarias
+        mv proyecto/htmlcov ../Reportes/Pruebas-Unitarias/
 
     - name: Configurar Git para publicar en GitHub Pages
       run: |
@@ -51,11 +52,11 @@ jobs:
         git checkout gh-pages || git checkout -b gh-pages
         git pull origin gh-pages || echo "No changes to pull from gh-pages"
 
-        # Renombrar el directorio htmlcov a htmlcov-u y moverlo directamente a la raíz
-        mv ../Reportes/htmlcov ./htmlcov-u
+        # Mueve el directorio htmlcov a la raíz de la rama gh-pages
+        mv ../Reportes/Pruebas-Unitarias/htmlcov ./Pruebas-Unitarias
 
-        # Añadir el directorio htmlcov-u a Git
-        git add htmlcov-u
+        # Añadir el directorio htmlcov a Git
+        git add Pruebas-Unitarias
 
         # Realiza commit si hay cambios
         git commit -m "Publicando reporte de cobertura de pruebas" || echo "No hay cambios para commitear"
