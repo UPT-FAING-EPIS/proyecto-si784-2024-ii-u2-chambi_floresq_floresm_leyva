@@ -23,7 +23,7 @@ jobs:
     # Instalar dependencias
     - name: Install dependencies
       run: |
-        pip install -r requirements.txt  # Si tienes un archivo requirements.txt, o
+        pip install -r proyecto/requirements.txt
         pip install mutmut==2.0.0
 
     # Ejecutar pruebas mutantes
