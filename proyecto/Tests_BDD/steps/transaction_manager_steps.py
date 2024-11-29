@@ -17,6 +17,19 @@ def step_impl(context):
 def step_impl(context):
     assert context.user_account_balance == 1500
 
+# When intenta depositar 500
+@when(u'intenta depositar 500')
+def step_impl(context):
+    if context.account:
+        context.account.deposit(500)
+    else:
+        context.error_message = "Cuenta inexistente"
+
+# Then se muestra un mensaje de error indicando cuenta inexistente
+@then(u'se muestra un mensaje de error indicando cuenta inexistente')
+def step_impl(context):
+    assert context.error_message == "Cuenta inexistente"
+
 # Given un usuario tiene 300 en su cuenta
 @given(u'un usuario tiene 300 en su cuenta')
 def step_impl(context):
@@ -54,21 +67,3 @@ def step_impl(context):
 def step_impl(context):
     assert context.account_A_balance == 400
     assert context.account_B_balance == 400
-
-# Given un usuario sin cuentas registradas
-@given(u'un usuario sin cuentas registradas')
-def step_impl(context):
-    context.account = None  # No hay cuenta registrada
-
-# When intenta depositar 500
-@when(u'intenta depositar 500')
-def step_impl(context):
-    if context.account:
-        context.account.deposit(500)
-    else:
-        context.error_message = "Cuenta inexistente"
-
-# Then se muestra un mensaje de error indicando cuenta inexistente
-@then(u'se muestra un mensaje de error indicando cuenta inexistente')
-def step_impl(context):
-    assert context.error_message == "Cuenta inexistente"

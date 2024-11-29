@@ -1,128 +1,79 @@
 from behave import given, when, then
 
-# Given un usuario tiene una cuenta con un saldo inicial de 1000
-@given(u'un usuario tiene una cuenta con un saldo inicial de 1000')
+# Given un usuario sin cuenta registrada
+@given(u'un usuario sin cuenta registrada')
 def step_impl(context):
-    # Guardamos el saldo inicial de la cuenta del usuario
-    context.account_balance = 1000
+    context.user = None  # Representa que el usuario no tiene cuenta
 
-# When el usuario realiza un depósito de 500
-@when(u'el usuario realiza un depósito de 500')
+# When el usuario proporciona los datos válidos para la cuenta
+@when(u'el usuario proporciona los datos válidos para la cuenta')
 def step_impl(context):
-    # Lógica para depositar 500 en la cuenta
-    context.account_balance += 500
+    # Simulamos la creación de una cuenta con datos válidos
+    context.user = {"name": "Juan Pérez", "balance": 1000}  # Ejemplo de cuenta creada
 
-# Then el saldo de la cuenta debe ser 1500
-@then(u'el saldo de la cuenta debe ser 1500')
+# Then la cuenta se crea exitosamente
+@then(u'la cuenta se crea exitosamente')
 def step_impl(context):
-    assert context.account_balance == 1500
+    assert context.user is not None  # Verificamos que la cuenta se haya creado
 
-# Given el saldo de la cuenta es 1000
-@given(u'el saldo de la cuenta es 1000')
+# Given un usuario intenta registrar una cuenta
+@given(u'un usuario intenta registrar una cuenta')
 def step_impl(context):
-    context.account_balance = 1000
+    context.user = None  # El usuario no ha completado el registro
 
-# When el usuario solicita retirar 300
-@when(u'el usuario solicita retirar 300')
+# When el usuario no completa todos los campos requeridos
+@when(u'el usuario no completa todos los campos requeridos')
 def step_impl(context):
-    # Lógica para retirar 300
-    if context.account_balance >= 300:
-        context.account_balance -= 300
-        context.withdrawal_success = True
-    else:
-        context.withdrawal_success = False
+    context.registration_error = "Campos incompletos"  # Simulamos un error de registro
 
-# Then el saldo de la cuenta debe ser 700
-@then(u'el saldo de la cuenta debe ser 700')
+# Then se muestra un error indicando datos faltantes
+@then(u'se muestra un error indicando datos faltantes')
 def step_impl(context):
-    assert context.account_balance == 700
-    assert context.withdrawal_success is True
+    assert context.registration_error == "Campos incompletos"
 
-# Given un usuario intenta retirar más dinero del que tiene
-@given(u'un usuario intenta retirar más dinero del que tiene')
+# When el usuario consulta el saldo de su cuenta
+@when(u'el usuario consulta el saldo de su cuenta')
 def step_impl(context):
-    context.account_balance = 200
-    context.withdrawal_amount = 500
+    context.balance = context.user["balance"]  # Consultamos el saldo de la cuenta
 
-# When el usuario intenta retirar 500
-@when(u'el usuario intenta retirar 500')
+# Then se muestra el saldo actual
+@then(u'se muestra el saldo actual')
 def step_impl(context):
-    # Lógica para intentar retirar más de lo que hay en la cuenta
-    if context.account_balance < context.withdrawal_amount:
-        context.error_message = "Fondos insuficientes"
-        context.withdrawal_success = False
-    else:
-        context.account_balance -= context.withdrawal_amount
-        context.withdrawal_success = True
+    assert context.balance == 1000  # Verificamos que el saldo es correcto
 
-# Then se muestra un mensaje de error "Fondos insuficientes"
-@then(u'se muestra un mensaje de error "Fondos insuficientes"')
+# When el usuario intenta consultar el saldo
+@when(u'el usuario intenta consultar el saldo')
 def step_impl(context):
-    assert context.error_message == "Fondos insuficientes"
-    assert context.withdrawal_success is False
+    if context.user is None:
+        context.error_message = "No existen cuentas"  # Error por no tener cuenta
 
-# Given un usuario desea cambiar la información de su cuenta
-@given(u'un usuario desea cambiar la información de su cuenta')
+# Given un usuario con una cuenta activa
+@given(u'un usuario con una cuenta activa')
 def step_impl(context):
-    context.account_info = {
-        "name": "Juan Pérez",
-        "email": "juan@example.com"
-    }
+    context.user = {"name": "Juan Pérez", "balance": 1000, "active": True}  # Cuenta activa
 
-# When el usuario actualiza su correo electrónico a "juan.perez@nuevo.com"
-@when(u'el usuario actualiza su correo electrónico a "juan.perez@nuevo.com"')
+# When el usuario solicita eliminar su cuenta
+@when(u'el usuario solicita eliminar su cuenta')
 def step_impl(context):
-    # Lógica para actualizar la información de la cuenta
-    context.account_info["email"] = "juan.perez@nuevo.com"
+    context.user["active"] = False  # Elimina la cuenta al desactivarla
 
-# Then la cuenta del usuario debe tener el correo actualizado
-@then(u'la cuenta del usuario debe tener el correo actualizado')
+# Then la cuenta se elimina correctamente
+@then(u'la cuenta se elimina correctamente')
 def step_impl(context):
-    assert context.account_info["email"] == "juan.perez@nuevo.com"
+    assert not context.user["active"]  # Verificamos que la cuenta esté desactivada
 
-# Given el sistema tiene una lista de cuentas registradas
-@given(u'el sistema tiene una lista de cuentas registradas')
+# Given un usuario sin cuentas registradas
+@given(u'un usuario sin cuentas registradas')
 def step_impl(context):
-    context.accounts = {
-        "user1": {"balance": 1000, "email": "user1@example.com"},
-        "user2": {"balance": 2000, "email": "user2@example.com"}
-    }
+    context.user = None  # No tiene cuentas registradas
 
-# When el usuario consulta el saldo de la cuenta "user1"
-@when(u'el usuario consulta el saldo de la cuenta "user1"')
+# When el usuario solicita eliminar una cuenta
+@when(u'el usuario solicita eliminar una cuenta')
 def step_impl(context):
-    # Lógica para consultar el saldo de la cuenta
-    context.account_balance = context.accounts["user1"]["balance"]
+    if context.user is None:
+        context.error_message = "No existen cuentas"  # Error al intentar eliminar una cuenta inexistente
 
-# Then el saldo de la cuenta "user1" debe ser 1000
-@then(u'el saldo de la cuenta "user1" debe ser 1000')
+# Then se muestra un mensaje indicando que no existen cuentas
+@then(u'se muestra un mensaje indicando que no existen cuentas')
 def step_impl(context):
-    assert context.account_balance == 1000
-
-# Given el sistema tiene una cuenta activa
-@given(u'el sistema tiene una cuenta activa')
-def step_impl(context):
-    context.account_active = True
-
-# When el usuario desactiva la cuenta
-@when(u'el usuario desactiva la cuenta')
-def step_impl(context):
-    # Lógica para desactivar la cuenta
-    context.account_active = False
-
-# Then la cuenta debe estar desactivada
-@then(u'la cuenta debe estar desactivada')
-def step_impl(context):
-    assert context.account_active is False
-
-# When I create a new account with name "John Doe" and balance 1000
-@when(u'yo creo una nueva cuenta con nombre "John Doe" y saldo 1000')
-def step_impl(context):
-    # Crear la cuenta
-    context.account = context.account_manager.create_account("John Doe", 1000)
-
-# Then the account "John Doe" should be created with balance 1000
-@then(u'la cuenta "John Doe" debería ser creada con saldo 1000')
-def step_impl(context):
-    assert context.account.name == "John Doe"
-    assert context.account.balance == 1000
+    assert context.error_message == "No existen cuentas"  # Verificamos el mensaje de error

@@ -1,1 +1,1 @@
-print("Iniciando pasos en el directorio 'Steps'")
+print("Iniciando pasos en el directorio 'steps'")
