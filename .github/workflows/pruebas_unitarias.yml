@@ -16,17 +16,6 @@ jobs:
     - name: Check out the repository
       uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.8'  # Usa la versión de Python que necesites
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r proyecto/requirements.txt  # Instala dependencias desde requirements.txt
-        pip install pytest pytest-cov  # Instala pytest y pytest-cov para cobertura de pruebas
-        
     - name: Set up .NET SDK (for ReportGenerator)
       uses: actions/setup-dotnet@v3  # Usa la acción para configurar el SDK de .NET
       with:
@@ -38,14 +27,9 @@ jobs:
         # Agregar el directorio de herramientas globales de .NET al PATH
         echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
 
-    - name: Run tests and generate Cobertura XML coverage report
-      run: |
-        cd proyecto  # Cambia al directorio de tu proyecto
-        pytest --cov=. tests/ --cov-report=xml:tests/test_reports/coverage.cobertura.xml  # Genera el reporte de cobertura en formato Cobertura
-
     - name: Generate HTML report from Cobertura XML using ReportGenerator
       run: |
-        # Ejecuta ReportGenerator para generar el reporte HTML a partir del XML de cobertura
+        # Ejecuta ReportGenerator para generar el reporte HTML a partir de un archivo XML de cobertura existente
         ReportGenerator "-reports:tests/test_reports/coverage.cobertura.xml" "-targetdir:tests/test_reports/Cobertura" -reporttypes:HTML
 
     - name: Mover el directorio de reportes a Reportes
