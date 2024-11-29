@@ -95,3 +95,5 @@ ehthumbs.db
 !proyecto/Tests_BDD/*/
 !pytest.ini
 !proyecto/Tests_BDD/behave.ini
+!proyecto/report-unit/*/
+
