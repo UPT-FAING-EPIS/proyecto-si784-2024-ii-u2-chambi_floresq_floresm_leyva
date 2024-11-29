@@ -1,4 +1,4 @@
-name: Run SonarCloud Analysis
+name: Run SonarCloud Analysis and Deploy Report
 
 on:
   push:
@@ -13,56 +13,118 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Paso 1: Revisar el código desde el repositorio
-    - name: Checkout code
-      uses: actions/checkout@v2
+      # Paso 1: Revisar el código desde el repositorio
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    # Paso 2: Instalar herramientas de compilación necesarias para pyodbc
-    - name: Install build dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y build-essential unixodbc-dev
+      # Paso 2: Instalar herramientas de compilación necesarias para pyodbc
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential unixodbc-dev
 
-    # Paso 3: Instalar Java 17
-    - name: Install Java 17
-      run: |
-        sudo apt update
-        sudo apt install -y openjdk-17-jdk
-        java -version  # Verifica que Java 17 se haya instalado correctamente
+      # Paso 3: Instalar Java 17
+      - name: Install Java 17
+        run: |
+          sudo apt update
+          sudo apt install -y openjdk-17-jdk
+          java -version  # Verifica que Java 17 se haya instalado correctamente
 
-    # Paso 4: Descargar y descomprimir SonarScanner
-    - name: Download and extract SonarScanner
-      run: |
-        curl -L "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.2.1.4610-linux-x64.zip" -o sonar-scanner-linux.zip
-        unzip sonar-scanner-linux.zip -d /opt
-        sudo ln -s /opt/sonar-scanner-6.2.1.4610-linux-x64/bin/sonar-scanner /usr/local/bin/sonar-scanner
-        sonar-scanner --version  # Verifica que SonarScanner esté correctamente instalado
+      # Paso 4: Descargar y descomprimir SonarScanner
+      - name: Download and extract SonarScanner
+        run: |
+          curl -L "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.2.1.4610-linux-x64.zip" -o sonar-scanner-linux.zip
+          unzip sonar-scanner-linux.zip -d /opt
+          sudo ln -s /opt/sonar-scanner-6.2.1.4610-linux-x64/bin/sonar-scanner /usr/local/bin/sonar-scanner
+          sonar-scanner --version  # Verifica que SonarScanner esté correctamente instalado
 
-    # Paso 5: Configurar Python
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.x'
+      # Paso 5: Configurar Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
 
-    # Paso 6: Instalar dependencias
-    - name: Install dependencies
-      run: |
-        pip install -r proyecto/requirements.txt
+      # Paso 6: Instalar dependencias
+      - name: Install dependencies
+        run: |
+          pip install -r proyecto/requirements.txt
 
-    # Paso 7: Ejecutar pruebas con cobertura
-    - name: Run tests with coverage
-      run: |
-        cd proyecto
-        pytest --cov=. --cov-report=xml:report_coverage/coverage.xml
+      # Paso 7: Ejecutar pruebas con cobertura y generar ambos reportes
+      - name: Run tests with coverage
+        run: |
+          cd proyecto
+          # Generar reporte en formato XML
+          pytest --cov=. --cov-report=xml:report_coverage/coverage.xml  
+          # Generar reporte en formato HTML
+          pytest --cov=. --cov-report=html:report_coverage/htmlcov  # Este es el reporte HTML
 
-    # Paso 8: Subir resultados de cobertura a SonarCloud
-    - name: Run SonarCloud Analysis
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-      run: |
-        cd proyecto
-        sonar-scanner -Dsonar.projectKey=jaimeflores_flaskapp \
-          -Dsonar.organization=jaimeflores \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.python.coverage.reportPaths=proyecto/report_coverage/coverage.xml \
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+      # Paso 8: Ejecutar análisis en SonarCloud
+      - name: Run SonarCloud Analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: |
+          cd proyecto
+          sonar-scanner -Dsonar.projectKey=jaimeflores_flaskapp \
+            -Dsonar.organization=jaimeflores \
+            -Dsonar.host.url=https://sonarcloud.io \
+            -Dsonar.python.coverage.reportPaths=proyecto/report_coverage/coverage.xml \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+      # Paso 9.0 : Verificar si el directorio htmlcov existe antes de moverlo
+      - name: Check if htmlcov exists
+        run: |
+          if [ -d "proyecto/report_coverage/htmlcov" ]; then
+            echo "htmlcov directory exists."
+          else
+            echo "htmlcov directory does not exist. Exiting."
+            exit 1
+          fi
+
+      # Paso 9: Crear carpeta de reportes
+      - name: Create Reports folder
+        run: |
+          mkdir -p proyecto/Reportes  # Crear el directorio si no existe
+          # Mover el reporte HTML
+          mv proyecto/report_coverage/htmlcov/ proyecto/Reportes/  # Mover el reporte HTML a la carpeta de reportes
+          # Verificar que htmlcov haya sido generado
+          ls -la proyecto/Reportes/
+          ls -la proyecto/Reportes/htmlcov/
+
+      # Paso 9.1 : Verificar si el directorio htmlcov existe antes de moverlo
+      - name: Check if htmlcov exists
+        run: |
+          if [ -d "proyecto/Reportes/htmlcov" ]; then
+            echo "htmlcov directory exists."
+          else
+            echo "htmlcov directory does not exist. Exiting."
+            exit 1
+          fi  
+      
+      # Paso 10.0 : Eliminar .gitignore en htmlcov (si existe)
+      - name: Remove .gitignore from htmlcov
+        run: |
+          if [ -f "proyecto/Reportes/htmlcov/.gitignore" ]; then
+            rm -f proyecto/Reportes/htmlcov/.gitignore
+          fi
+
+      # Paso 10: Configurar Git para publicar en GitHub Pages
+      - name: Configure Git for GitHub Pages
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      # Guardar los cambios locales antes del checkout
+      - name: Commit local changes
+        run: |
+          git add .  # Agrega los cambios
+          git commit -m "Saving analysis reports" || echo "No changes to commit"  # Confirmar los cambios si los hay
+          
+      # Paso 11: Publicar el reporte en GitHub Pages
+      - name: Publish report to GitHub Pages
+        run: |
+          git fetch origin gh-pages  # Obtener la última versión de la rama gh-pages
+          git checkout gh-pages  # Cambiar a la rama gh-pages
+          cp -r proyecto/Reportes/htmlcov ./  # Copiar todo el directorio htmlcov a la rama gh-pages
+          git add htmlcov  # Asegúrate de agregar todo el contenido del directorio htmlcov
+          git commit -m "Publishing SonarCloud coverage report and htmlcov" || echo "No changes to commit"  # Confirmar los cambios si los hay
+          git push origin gh-pages  # Publicar sin usar --force

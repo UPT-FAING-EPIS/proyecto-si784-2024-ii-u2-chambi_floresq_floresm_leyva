@@ -1,5 +1,6 @@
 from config.database import Database
 from datetime import datetime
+from datetime import datetime
 
 class TransactionManager:
     @staticmethod
@@ -7,13 +8,11 @@ class TransactionManager:
         try:
             conn = Database.get_connection()
             cursor = conn.cursor()
-            
-            cursor.execute("""
-                INSERT INTO Transactions 
-                (UserId, FromCurrency, ToCurrency, Amount, Rate, Result, TransactionDate) 
-                VALUES (?, ?, ?, ?, ?, ?, ?)""",
+            TransactionManager.fecha = datetime.now()
+            fecha = TransactionManager.fecha
+            cursor.execute("""INSERT INTO Transactions (UserId, FromCurrency, ToCurrency, Amount, Rate, Result, TransactionDate) VALUES (?, ?, ?, ?, ?, ?, ?)""",
                 user_id, divisa_origen, divisa_destino, monto, tasa_conversion, 
-                monto_convertido, datetime.now())
+                monto_convertido, fecha)
             
             conn.commit()
             return True
