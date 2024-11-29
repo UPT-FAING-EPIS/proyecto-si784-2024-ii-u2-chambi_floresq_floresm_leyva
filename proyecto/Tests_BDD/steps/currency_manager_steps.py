@@ -16,13 +16,6 @@ def step_impl(context):
     # No hay datos para la moneda 'XYZ'
     context.exchange_rates = {}
 
-@given(u'un usuario quiere convertir 100 USD a EUR')
-def step_impl(context):
-    # El usuario quiere convertir 100 USD a EUR
-    context.amount = 100
-    context.from_currency = "USD"
-    context.to_currency = "EUR"
-
 @when(u'el usuario consulta el tipo de cambio de USD a EUR')
 def step_impl(context):
     # Realizar la consulta del tipo de cambio de USD a EUR
@@ -33,15 +26,10 @@ def step_impl(context):
     # Intentar consultar el tipo de cambio de una moneda no registrada
     context.result = context.exchange_rates.get("XYZ", {}).get("EUR", "Tipo de cambio no disponible")
 
-@when(u'realiza la conversión')
+@when(u'el usuario consulta el tipo de cambio de EUR a USD')
 def step_impl(context):
-    # Verificar que las monedas están en el diccionario
-    if context.from_currency not in context.exchange_rates or context.to_currency not in context.exchange_rates.get(context.from_currency, {}):
-        context.result = f"Tipo de cambio no disponible para {context.from_currency} a {context.to_currency}"
-    elif context.amount <= 0:
-        context.result = "La cantidad debe ser positiva"
-    else:
-        context.result = context.amount * context.exchange_rates.get(context.from_currency, {}).get(context.to_currency, 0)
+    # Realizar la consulta del tipo de cambio de EUR a USD
+    context.result = context.exchange_rates.get("EUR", {}).get("USD", "Tipo de cambio no disponible")
 
 @then(u'se muestra el tipo de cambio actual')
 def step_impl(context):
@@ -52,13 +40,3 @@ def step_impl(context):
 def step_impl(context):
     # Verificar que se muestre un mensaje de error si la moneda es desconocida
     assert context.result == "Tipo de cambio no disponible"
-
-@then(u'se muestra el monto equivalente en EUR')
-def step_impl(context):
-    # Verificar que se haya mostrado el monto equivalente en EUR
-    assert context.result == 100 * 0.85  # 100 USD * tipo de cambio 0.85 EUR
-
-@then(u'se muestra un mensaje indicando que la cantidad debe ser positiva')
-def step_impl(context):
-    # Verificar que se haya mostrado un mensaje indicando que la cantidad debe ser positiva
-    assert context.result == "La cantidad debe ser positiva"

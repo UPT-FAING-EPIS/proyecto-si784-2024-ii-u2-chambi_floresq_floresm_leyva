@@ -11,3 +11,7 @@ Feature: Gestión de monedas
     When el usuario consulta el tipo de cambio de XYZ
     Then se muestra un mensaje de error indicando moneda desconocida
 
+  Scenario: Consultar el tipo de cambio de EUR a USD
+      Given el sistema tiene acceso a tipos de cambio actualizados
+      When el usuario consulta el tipo de cambio de EUR a USD
+      Then se muestra el tipo de cambio actual
