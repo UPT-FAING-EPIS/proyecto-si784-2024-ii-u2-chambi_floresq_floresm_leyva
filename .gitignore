@@ -91,9 +91,7 @@ ehthumbs.db
 .vscode/
 
 # Allow SqlServerTypes folder and files
-!ProyectoFinal/SqlServerTypes/
-!ProyectoFinal/SqlServerTypes/*/
 !proyecto/report_coverage/*/
 !proyecto/Tests_BDD/*/
 !pytest.ini
-!behave.ini
+!/proyecto/Tests_BDD/behave.ini
