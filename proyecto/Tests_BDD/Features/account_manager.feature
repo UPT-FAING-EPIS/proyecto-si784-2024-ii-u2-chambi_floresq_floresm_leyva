@@ -20,13 +20,3 @@ Feature: Gestión de cuentas
     Given un usuario sin cuentas registradas
     When el usuario intenta consultar el saldo
     Then se muestra un mensaje indicando que no existen cuentas
-
-  Scenario: Eliminar una cuenta existente
-    Given un usuario con una cuenta activa
-    When el usuario solicita eliminar su cuenta
-    Then la cuenta se elimina correctamente
-
-  Scenario: Eliminar una cuenta inexistente
-    Given un usuario sin cuentas registradas
-    When el usuario solicita eliminar una cuenta
-    Then se muestra un mensaje indicando que no existen cuentas

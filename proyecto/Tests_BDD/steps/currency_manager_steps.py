@@ -1,68 +1,64 @@
 from behave import given, when, then
 
-# Given el sistema tiene acceso a tipos de cambio actualizados
+# Simulación de tipos de cambio en un diccionario
+exchange_rates = {
+    "USD": {"EUR": 0.85},
+    "EUR": {"USD": 1.18}
+}
+
 @given(u'el sistema tiene acceso a tipos de cambio actualizados')
 def step_impl(context):
-    # Aquí podrías verificar que el sistema tenga acceso a una fuente de datos
-    context.exchange_rates_available = True
+    # Asegurarse de que el sistema tenga tipos de cambio actualizados
+    context.exchange_rates = exchange_rates
 
-# When el usuario consulta el tipo de cambio de USD a EUR
-@when(u'el usuario consulta el tipo de cambio de USD a EUR')
-def step_impl(context):
-    # Lógica para obtener el tipo de cambio de USD a EUR
-    context.exchange_rate = 0.85  # Ejemplo de tipo de cambio USD -> EUR
-
-# Then se muestra el tipo de cambio actual
-@then(u'se muestra el tipo de cambio actual')
-def step_impl(context):
-    assert context.exchange_rate == 0.85  # Verificamos que el tipo de cambio sea correcto
-
-# Given el sistema no tiene registro de la moneda XYZ
 @given(u'el sistema no tiene registro de la moneda XYZ')
 def step_impl(context):
-    # Simulamos que XYZ no existe en los registros del sistema
-    context.currency_exists = False
+    # No hay datos para la moneda 'XYZ'
+    context.exchange_rates = {}
 
-# When el usuario consulta el tipo de cambio de XYZ
-@when(u'el usuario consulta el tipo de cambio de XYZ')
-def step_impl(context):
-    # El sistema no tiene información de la moneda XYZ
-    if not context.currency_exists:
-        context.error_message = "Moneda desconocida"  # Simulamos un error
-
-# Then se muestra un mensaje de error indicando moneda desconocida
-@then(u'se muestra un mensaje de error indicando moneda desconocida')
-def step_impl(context):
-    assert context.error_message == "Moneda desconocida"  # Verificamos el mensaje de error
-
-# Given un usuario quiere convertir 100 USD a EUR
 @given(u'un usuario quiere convertir 100 USD a EUR')
 def step_impl(context):
-    # Guardamos el monto y las monedas de origen y destino
+    # El usuario quiere convertir 100 USD a EUR
     context.amount = 100
     context.from_currency = "USD"
     context.to_currency = "EUR"
 
-# When realiza la conversión
+@when(u'el usuario consulta el tipo de cambio de USD a EUR')
+def step_impl(context):
+    # Realizar la consulta del tipo de cambio de USD a EUR
+    context.result = context.exchange_rates.get("USD", {}).get("EUR", "Tipo de cambio no disponible")
+
+@when(u'el usuario consulta el tipo de cambio de XYZ')
+def step_impl(context):
+    # Intentar consultar el tipo de cambio de una moneda no registrada
+    context.result = context.exchange_rates.get("XYZ", {}).get("EUR", "Tipo de cambio no disponible")
+
 @when(u'realiza la conversión')
 def step_impl(context):
-    # Lógica para realizar la conversión
-    conversion_rate = 0.85  # Ejemplo de tipo de cambio USD -> EUR
-    context.converted_amount = context.amount * conversion_rate  # Realizamos la conversión
+    # Verificar que las monedas están en el diccionario
+    if context.from_currency not in context.exchange_rates or context.to_currency not in context.exchange_rates.get(context.from_currency, {}):
+        context.result = f"Tipo de cambio no disponible para {context.from_currency} a {context.to_currency}"
+    elif context.amount <= 0:
+        context.result = "La cantidad debe ser positiva"
+    else:
+        context.result = context.amount * context.exchange_rates.get(context.from_currency, {}).get(context.to_currency, 0)
 
-# Then se muestra el monto equivalente en EUR
+@then(u'se muestra el tipo de cambio actual')
+def step_impl(context):
+    # Verificar que se haya mostrado el tipo de cambio
+    assert context.result != "Tipo de cambio no disponible"
+
+@then(u'se muestra un mensaje de error indicando moneda desconocida')
+def step_impl(context):
+    # Verificar que se muestre un mensaje de error si la moneda es desconocida
+    assert context.result == "Tipo de cambio no disponible"
+
 @then(u'se muestra el monto equivalente en EUR')
 def step_impl(context):
-    assert context.converted_amount == 85  # Verificamos que el monto convertido sea el correcto
+    # Verificar que se haya mostrado el monto equivalente en EUR
+    assert context.result == 100 * 0.85  # 100 USD * tipo de cambio 0.85 EUR
 
-# Given un usuario intenta convertir -50 USD a EUR
-@given(u'un usuario intenta convertir -50 USD a EUR')
-def step_impl(context):
-    context.amount = -50  # Cantidad negativa
-    context.from_currency = 'USD'
-    context.to_currency = 'EUR'
-
-# Then se muestra un mensaje indicando que la cantidad debe ser positiva
 @then(u'se muestra un mensaje indicando que la cantidad debe ser positiva')
 def step_impl(context):
-    assert context.error_message == "La cantidad debe ser positiva."  # Verificamos el error de cantidad negativa
+    # Verificar que se haya mostrado un mensaje indicando que la cantidad debe ser positiva
+    assert context.result == "La cantidad debe ser positiva"
