@@ -26,6 +26,7 @@ jobs:
         pip install mutmut==2.0.0
         pip install pytest  # Instalar pytest si no está en tus requerimientos
         pip install flask==3.0.3
+        pip install pyodbc
 
     # Ejecutar pruebas mutantes
     - name: Run mutmut
