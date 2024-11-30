@@ -47,17 +47,28 @@ jobs:
           mv proyecto/report_mutante ../Reportes/
         
 
-      - name: Set up Git for deployment
+      - name: Configurar Git para publicar en GitHub Pages
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Deploy Playwright report to GitHub Pages
+      - name: Prepare gh-pages branch and deploy report
         run: |
+          # Obtiene la última versión de la rama gh-pages
           git fetch origin gh-pages || echo "No previous gh-pages branch"
+          
+          # Si la rama gh-pages existe, realiza un pull para obtener los cambios remotos
           git checkout gh-pages || git checkout -b gh-pages
           git pull origin gh-pages || echo "No changes to pull from gh-pages"
-          cp -r ../Reportes/* .  # Copiar contenido del reporte a la raíz
-          git add .  # Agregar todos los archivos nuevos
-          git commit -m "Deploy Playwright report to gh-pages" || echo "No changes to commit"
+
+          # Mueve el directorio htmlcov a la raíz de la rama gh-pages
+          cp -r ../Reportes/* .
+
+          # Añadir el directorio htmlcov a Git
+          git add .
+
+          # Realiza commit si hay cambios
+          git commit -m "Publicando reporte de cobertura de pruebas mutantes" || echo "No hay cambios para commitear"
+
+          # Empuja los cambios a la rama gh-pages
           git push origin gh-pages
