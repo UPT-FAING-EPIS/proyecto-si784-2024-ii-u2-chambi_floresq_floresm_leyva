@@ -4,6 +4,11 @@ on:
   push:
     branches: [ main ]
 
+concurrency:
+  group: "deploy-gh-pages" 
+  cancel-in-progress: true   
+
+
 jobs:
   mutant-testing:
     runs-on: ubuntu-latest
@@ -54,9 +59,7 @@ jobs:
         
         # Si la rama gh-pages existe, realiza un pull para obtener los cambios remotos
         git checkout gh-pages || git checkout -b gh-pages
-
-        # Actualiza la rama local con los cambios remotos
-        git pull origin gh-pages --rebase || git pull origin gh-pages  # Rebase o merge según lo que prefieras
+        git pull origin gh-pages || echo "No changes to pull from gh-pages"
 
         # Mueve el directorio report_mutante a la raíz de la rama gh-pages
         cp -r proyecto/html/report_mutante/* .  # Copia el contenido de report_mutante al directorio raíz

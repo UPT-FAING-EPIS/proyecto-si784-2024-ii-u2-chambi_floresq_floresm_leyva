@@ -5,6 +5,10 @@ on:
     branches:
       - main  # Ajusta según tu rama principal
 
+concurrency:
+  group: "deploy-gh-pages" 
+  cancel-in-progress: true   
+  
 jobs:
   run-playwright-tests:
     runs-on: ubuntu-latest
