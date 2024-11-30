@@ -1,9 +1,10 @@
 name: Semgrep Analysis
 
-on: 
-  push:
-    branches:
-      - main
+on:
+  workflow_run:
+    workflows: ["Reporte Pruebas UI con playwright"] 
+    types:
+      - completed
 
 concurrency:
   group: "deploy-gh-pages" 

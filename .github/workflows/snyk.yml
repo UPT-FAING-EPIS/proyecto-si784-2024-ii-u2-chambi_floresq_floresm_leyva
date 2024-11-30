@@ -2,7 +2,7 @@ name: CI with Snyk
 
 on:
   workflow_run:
-    workflows: ["Mutant Testing Report"]  # Nombre del primer workflow
+    workflows: ["Semgrep Analysis"]  
     types:
       - completed
 

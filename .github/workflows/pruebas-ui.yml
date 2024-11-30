@@ -1,14 +1,15 @@
-name: Run Playwright Tests and Deploy Report
+name: Reporte Pruebas UI con playwright
 
 on:
-  push:
-    branches:
-      - main  # Ajusta según tu rama principal
+  workflow_run:
+    workflows: ["Reporte de pruebas unitarias"]  # Nombre del primer workflow
+    types:
+      - completed
 
 concurrency:
   group: "deploy-gh-pages" 
   cancel-in-progress: true   
-  
+
 jobs:
   run-playwright-tests:
     runs-on: ubuntu-latest
