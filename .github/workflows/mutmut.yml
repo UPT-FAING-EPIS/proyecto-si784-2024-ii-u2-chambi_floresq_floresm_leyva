@@ -1,15 +1,9 @@
 name: Reporte de Mutant Testing
 
 on:
-  workflow_run:
-    workflows: ["Reporte BDD con Allure"]  # Nombre del primer workflow
-    types:
-      - completed
-
-concurrency:
-  group: "deploy-gh-pages" 
-  cancel-in-progress: true   
-
+  push:
+    branches:
+      - main  
 
 jobs:
   mutant-testing:

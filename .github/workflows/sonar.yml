@@ -1,20 +1,15 @@
 name: Reporte de Análisis con SonarCloud
-
 on:
-  workflow_run:
-    workflows: ["CI with Snyk"]  
-    types:
-      - completed
-
-concurrency:
-  group: "deploy-gh-pages" 
-  cancel-in-progress: true   
+  push:
+    branches:
+      - main
 
 jobs:
   sonarcloud-analysis:
     runs-on: ubuntu-latest
 
     steps:
+      # Paso 1: Revisar el código desde el repositorio
       - name: Checkout code
         uses: actions/checkout@v2
 

@@ -1,14 +1,9 @@
 name: Reporte de pruebas unitarias
 
 on:
-  workflow_run:
-    workflows: ["Reporte de Mutant Testing"]  # Nombre del primer workflow
-    types:
-      - completed
-
-concurrency:
-  group: "deploy-gh-pages" 
-  cancel-in-progress: true   
+  push:
+    branches:
+      - main 
 
 jobs:
   deploy:

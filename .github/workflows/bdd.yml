@@ -1,12 +1,8 @@
 name: Reporte BDD con Allure
-
 on:
   push:
-    branches: [ main ]
-
-concurrency:
-  group: "deploy-gh-pages" 
-  cancel-in-progress: true   
+    branches:
+      - main  
 
 jobs:
   generate-report:

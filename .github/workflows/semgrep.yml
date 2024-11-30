@@ -1,14 +1,9 @@
 name: Semgrep Analysis
 
-on:
-  workflow_run:
-    workflows: ["Reporte Pruebas UI con playwright"] 
-    types:
-      - completed
-
-concurrency:
-  group: "deploy-gh-pages" 
-  cancel-in-progress: true   
+on: 
+  push:
+    branches:
+      - main
 
 jobs:
   security:
