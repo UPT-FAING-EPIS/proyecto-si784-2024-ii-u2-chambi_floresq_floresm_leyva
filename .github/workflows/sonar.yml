@@ -14,7 +14,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Paso 1: Revisar el código desde el repositorio
       - name: Checkout code
         uses: actions/checkout@v2
 
