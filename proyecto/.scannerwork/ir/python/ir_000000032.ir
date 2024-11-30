@@ -1,0 +1,13 @@
+
+9
+get_connection'config.database.Database.get_connectionfd["DRIVER={ODBC Driver 17 for SQL Server};SERVER=.;DATABASE=CasaDeCambioDBTest;UID=sa;PWD=sa"str" 7
+5
+ (	connection_string"
+#id##id#*2str2
+0
+ (""
+#unknown-value##unknown-value#!
+
+ (0"
+connect *8
+ (0*¦C:\Users\Jaimeelias\Documents\CALIDAD Y PRUEBAS\u2\proyecto unidad\bdd_automatizado\proyecto-si784-2024-ii-u2-chambi_floresq_floresm_leyva\proyecto\config\database.py

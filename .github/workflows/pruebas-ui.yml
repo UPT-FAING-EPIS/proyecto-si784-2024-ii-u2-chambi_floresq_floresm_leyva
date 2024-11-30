@@ -1,0 +1,50 @@
+name: Run Playwright Tests and Deploy Report
+
+on:
+  push:
+    branches:
+      - main  # Ajusta según tu rama principal
+
+jobs:
+  run-playwright-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Verificar el repositorio
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Configurar Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'  # Cambia la versión si es necesario
+
+      # Instalar dependencias de Playwright
+      - name: Install dependencies
+        run: |
+          cd proyecto
+          npm install
+          npx playwright install  # Instala navegadores necesarios para Playwright
+
+      # Mover el reporte directamente a Reportes
+      - name: Move Playwright report to Reportes
+        run: |
+          mkdir -p ../Reportes  # Crear la carpeta si no existe
+          mv proyecto/playwright-report ../Reportes/  # Mover el reporte generado
+
+      - name: Set up Git for deployment
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+
+      # Preparar y desplegar a GitHub Pages
+      - name: Deploy Playwright report to GitHub Pages
+        run: |
+          git fetch origin gh-pages || echo "No previous gh-pages branch"
+          git checkout gh-pages || git checkout -b gh-pages
+          git pull origin gh-pages || echo "No changes to pull from gh-pages"
+          cp -r ../Reportes/* .  # Copiar contenido del reporte a la raíz
+          git add .  # Agregar todos los archivos nuevos
+          git commit -m "Deploy Playwright report to gh-pages" || echo "No changes to commit"
+          git push origin gh-pages

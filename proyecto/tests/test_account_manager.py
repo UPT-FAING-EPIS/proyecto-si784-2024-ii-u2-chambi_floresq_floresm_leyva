@@ -1,5 +1,5 @@
 import pytest
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 from decimal import Decimal
 from classes.account_manager import AccountManager
 from config.database import Database
@@ -69,3 +69,74 @@ def test_update_balances_database_error(mock_database_connection):
     
     assert "error" in result  # Verifica que se maneje el error
     assert result["error"] == "Database error"
+
+def test_update_balances_print_messages():
+    with patch('builtins.print') as mock_print:
+        # Mockear la conexión a la base de datos
+        with patch('config.database.Database.get_connection') as mock_get_connection:
+            mock_conn = MagicMock()
+            mock_cursor = MagicMock()
+            mock_get_connection.return_value = mock_conn
+            mock_conn.cursor.return_value = mock_cursor
+
+            # Configurar los valores que devolverá el cursor
+            mock_cursor.fetchone.side_effect = [
+                (Decimal('1000.00'),),  # Balance de origen
+                (Decimal('500.00'),)    # Balance de destino
+            ]
+
+            # Llamar al método bajo prueba
+            result = AccountManager.update_balances(
+                user_id=1,
+                divisa_origen='USD',
+                divisa_destino='EUR',
+                monto=Decimal('100.00'),
+                monto_convertido=Decimal('90.00')
+            )
+
+            # Definir los mensajes esperados
+            expected_messages = [
+                "Iniciando actualización de balances para UserId: 1",
+                "Divisa origen: USD, Divisa destino: EUR, Monto: 100.00, Monto convertido: 90.00",
+                "Conexión a la base de datos establecida correctamente.",
+                "Obteniendo balance de USD...",
+                "Resultado de balance de USD: (Decimal('1000.00'),)",
+                "Balance de origen convertido a Decimal: 1000.00",
+                "Nuevo balance de USD: 900.00",
+                "Balance de USD actualizado en la base de datos.",
+                "Obteniendo balance de EUR...",
+                "Resultado de balance de EUR: (Decimal('500.00'),)",
+                "Balance de destino convertido a Decimal: 500.00",
+                "Nuevo balance de EUR: 590.00",
+                "Balance de EUR actualizado en la base de datos.",
+                "Transacción confirmada (commit).",
+                "Cerrando recursos...",
+                "Cursor cerrado.",
+                "Conexión cerrada."
+            ]
+
+            # Obtener los mensajes realmente impresos
+            actual_calls = mock_print.call_args_list
+            actual_messages = [call.args[0] for call in actual_calls]
+
+            # Verificar que cada mensaje esperado esté en los mensajes impresos
+            for expected_message in expected_messages:
+                assert expected_message in actual_messages
+
+            # Verificar que el método devuelve True
+            assert result is True
+
+def test_get_account_balances_handles_none_cursor_conn():
+    with patch('config.database.Database.get_connection') as mock_get_connection:
+        mock_conn = MagicMock()
+        mock_get_connection.return_value = mock_conn
+        mock_conn.cursor.return_value = None
+
+        result = AccountManager.get_account_balances(1)
+        assert result is None
+
+        mock_conn.cursor.assert_called_once()
+        mock_conn.close.assert_called_once()
+
+####
+

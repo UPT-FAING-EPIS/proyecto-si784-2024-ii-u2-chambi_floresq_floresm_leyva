@@ -1,0 +1,64 @@
+name: Generate and Deploy HTML Report
+
+on:
+  push:
+    branches:
+      - main  # O la rama que prefieras
+  pull_request:
+    branches:
+      - main  # O la rama que prefieras
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'  # Usa la versión de Python que necesites
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r proyecto/requirements.txt
+        pip install pytest pytest-cov
+
+    - name: Run tests and generate HTML coverage report
+      run: |
+        cd proyecto  # Cambia al directorio del proyecto si es necesario
+        pytest --cov=. tests/ --cov-report=html:report-unit
+
+    - name: Mover directorio de reporte a Reportes
+      run: |
+        mkdir -p ../Reportes
+        mv proyecto/report-unit ../Reportes/
+
+    - name: Configurar Git para publicar en GitHub Pages
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: Prepare gh-pages branch and deploy report
+      run: |
+        # Obtiene la última versión de la rama gh-pages
+        git fetch origin gh-pages || echo "No previous gh-pages branch"
+        
+        # Si la rama gh-pages existe, realiza un pull para obtener los cambios remotos
+        git checkout gh-pages || git checkout -b gh-pages
+        git pull origin gh-pages || echo "No changes to pull from gh-pages"
+
+        # Mueve el directorio htmlcov a la raíz de la rama gh-pages
+        cp -r ../Reportes/* .
+
+        # Añadir el directorio htmlcov a Git
+        git add .
+
+        # Realiza commit si hay cambios
+        git commit -m "Publicando reporte de cobertura de pruebas unitarias" || echo "No hay cambios para commitear"
+
+        # Empuja los cambios a la rama gh-pages
+        git push origin gh-pages

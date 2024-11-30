@@ -1,0 +1,8 @@
+classes.currency_manager.CurrencyManager.convert_currency
+false
+f89283233714c93a83b6aaa7aec266d0
+config.database.Database.conversion_rates
+decimal.Decimal.__init__
+str.__init__
+==
+quantize
