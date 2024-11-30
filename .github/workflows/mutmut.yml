@@ -59,16 +59,17 @@ jobs:
         
         # Si la rama gh-pages existe, realiza un pull para obtener los cambios remotos
         git checkout gh-pages || git checkout -b gh-pages
-        git pull origin gh-pages || echo "No changes to pull from gh-pages"
-
+        git pull origin gh-pages --rebase || echo "No changes to pull from gh-pages"  # Se usa --rebase para evitar conflictos
+    
         # Mueve el directorio report_mutante a la raíz de la rama gh-pages
-        cp -r proyecto/html/report_mutante/* .  # Copia el contenido de report_mutante al directorio raíz
-
+        cp -r proyecto/html/report_mutante/* .
+        
         # Añadir los archivos al repositorio
         git add .
-
+    
         # Realiza commit si hay cambios
         git commit -m "Publicando reporte de Mutant Testing" || echo "No hay cambios para commitear"
-
+    
         # Empuja los cambios a la rama gh-pages
-        git push origin gh-pages
+        git push origin gh-pages || echo "Error al hacer push"
+    
