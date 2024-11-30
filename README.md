@@ -1,5 +1,5 @@
 # 🚀 Proyecto Casa de cambio en línea
-![Banner del Proyecto](https://i.postimg.cc/K8JjZ8pB/asd.jpg)
+![Banner del Proyecto](https://i.ibb.co/m5HMZH5/asd.jpg)
 
 ## 👥 Equipo de Desarrollo
 
@@ -49,7 +49,7 @@
     </td>
     <td align="center">
       <a href="https://semgrep.dev/">
-        <img src="https://avatars.githubusercontent.com/u/60741247" width="100"/>
+        <img src="https://semgrep.dev/logo.png" width="100"/>
         <br>Semgrep
       </a>
     </td>
@@ -69,14 +69,14 @@
     </td>
     <td align="center">
       <a href="https://mutmut.readthedocs.io/">
-        <img src="https://i.ibb.co/09hNCVZ/Captura.jpg" width="100"/>
+        <img src="https://i.ibb.co/V2Dg3zL/Presentaci-n-proyecto-de-tecnolog-a-gradient-tecnol-gico-azul-oscuro-1920-x-500-px-910-x-500-px-910.png" width="100"/>
         <br>Mutmut
         <br><i>Pruebas Mutantes</i>
       </a>
     </td>
     <td align="center">
       <a href="https://docs.qameta.io/allure/">
-        <img src="https://th.bing.com/th/id/OIP.O-RzVki7XY8FBxYhZShzPAHaHa?rs=1&pid=ImgDetMain" width="100"/>
+        <img src="https://i.ibb.co/GRgNXTJ/Presentaci-n-proyecto-de-tecnolog-a-gradient-tecnol-gico-azul-oscuro-1920-x-500-px-910-x-500-px-910.png" width="100"/>
         <br>Allure
         <br><i>BDD Testing</i>
       </a>
