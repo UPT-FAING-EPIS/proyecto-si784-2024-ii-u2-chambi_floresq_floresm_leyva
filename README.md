@@ -1,13 +1,9 @@
-# 🚀 Sistema de Gestión Académica
-![GitHub repo size](https://img.shields.io/github/repo-size/elvisleyva49/proyecto-si784-2024-ii-u2-chambi_floresq_floresm_leyva)
-![GitHub stars](https://img.shields.io/github/stars/elvisleyva49/proyecto-si784-2024-ii-u2-chambi_floresq_floresm_leyva)
-![GitHub forks](https://img.shields.io/github/forks/elvisleyva49/proyecto-si784-2024-ii-u2-chambi_floresq_floresm_leyva)
-![GitHub issues](https://img.shields.io/github/issues/elvisleyva49/proyecto-si784-2024-ii-u2-chambi_floresq_floresm_leyva)
-
+# 🚀 Proyecto Casa de cambio en línea
+![Banner del Proyecto](https://i.postimg.cc/K8JjZ8pB/asd.jpg)
 
 ## 👥 Equipo de Desarrollo
 
-| <img src="https://github.com/elvisleyva49.png" width="100" style="border-radius:50%"/> | <img src="https://github.com/jf2021070309.png" width="100" style="border-radius:50%"/> | <img src="https://github.com/JersonCh.png" width="100" style="border-radius:50%"/> |
+| <img src="https://github.com/elvisleyva49.png" width="100" style="border-radius:50%"/> | <img src="https://github.com/jf2021070309.png" width="100" style="border-radius:50%"/> | <img src="https://i.pinimg.com/236x/f5/f7/52/f5f75210890fe7da36fb85d162c759e8.jpg" width="100" style="border-radius:50%"/> |
 |:---------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------:|:---------------------------------------------------------------------------------:|
 | **Elvis Ronald Leyva Sardon** | **Jaime Elias Flores Quispe** | **Jerson Roni Chambi Cori** |
 
@@ -41,7 +37,7 @@
   <tr>
     <td align="center">
       <a href="https://www.sonarqube.org/">
-        <img src="https://www.sonarqube.org/assets/logo-31ad3115b1b4b120f3d1efd63e6b13ac9f1f89437f0cf6881cc4d8b5603a52b4.svg" width="100"/>
+        <img src="https://assets-eu-01.kc-usercontent.com/f42196a6-70a1-01d0-99f1-43134f12a58b/8e59bcad-6e39-41dc-abd9-a0e251e8d63f/Sonar%20%282%29.svg?w=160&h=40&auto=format&fit=crop" width="100"/>
         <br>SonarQube
       </a>
     </td>
@@ -66,21 +62,21 @@
   <tr>
     <td align="center">
       <a href="https://docs.pytest.org/">
-        <img src="https://docs.pytest.org/en/stable/_static/pytest_logo_curves.svg" width="100"/>
+        <img src="https://docs.pytest.org/en/stable/_static/pytest1.png" width="100"/>
         <br>Pytest
         <br><i>Pruebas Unitarias</i>
       </a>
     </td>
     <td align="center">
       <a href="https://mutmut.readthedocs.io/">
-        <img src="https://mutmut.readthedocs.io/en/latest/_static/mutmut.png" width="100"/>
+        <img src="https://i.ibb.co/09hNCVZ/Captura.jpg" width="100"/>
         <br>Mutmut
         <br><i>Pruebas Mutantes</i>
       </a>
     </td>
     <td align="center">
       <a href="https://docs.qameta.io/allure/">
-        <img src="https://raw.githubusercontent.com/allure-framework/allure2/master/docs/images/allure-logo.svg" width="100"/>
+        <img src="https://th.bing.com/th/id/OIP.O-RzVki7XY8FBxYhZShzPAHaHa?rs=1&pid=ImgDetMain" width="100"/>
         <br>Allure
         <br><i>BDD Testing</i>
       </a>
