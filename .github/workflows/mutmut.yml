@@ -42,16 +42,28 @@ jobs:
         mkdir -p proyecto/html/report_mutante  # Crear la carpeta 'report_mutante' si no existe
         mv proyecto/html/index.html proyecto/html/report_mutante/  # Mover el archivo index.html
 
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./proyecto/html/report_mutante  
-        user_name: 'github-actions[bot]'
-        user_email: 'github-actions[bot]@users.noreply.github.com'
-        commit_message: 'Update Mutant Testing Report'
+    - name: Configurar Git para publicar en GitHub Pages
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-permissions:
-  contents: write
-  pages: write
-  id-token: write
+    - name: Prepare gh-pages branch and deploy report
+      run: |
+        # Obtiene la última versión de la rama gh-pages
+        git fetch origin gh-pages || echo "No previous gh-pages branch"
+        
+        # Si la rama gh-pages existe, realiza un pull para obtener los cambios remotos
+        git checkout gh-pages || git checkout -b gh-pages
+        git pull origin gh-pages || echo "No changes to pull from gh-pages"
+
+        # Mueve el directorio report_mutante a la raíz de la rama gh-pages
+        cp -r proyecto/html/report_mutante/* .  # Copia el contenido de report_mutante al directorio raíz
+
+        # Añadir los archivos al repositorio
+        git add .
+
+        # Realiza commit si hay cambios
+        git commit -m "Publicando reporte de Mutant Testing" || echo "No hay cambios para commitear"
+
+        # Empuja los cambios a la rama gh-pages
+        git push origin gh-pages
