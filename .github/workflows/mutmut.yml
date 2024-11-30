@@ -23,20 +23,35 @@ jobs:
       # Instalar dependencias de Playwright
       - name: Install dependencies
         run: |
-          pip install -r proyecto/requirements.txt
+           pip install mutmut==2.0.0
+           pip install pytest
+           pip install -r proyecto/requirements.txt
 
-      # Mover el reporte directamente a Reportes
-      - name: Move Playwright report to Reportes
+      - name: Run mutmut
+        continue-on-error: true
         run: |
-          mkdir -p ../Reportes  # Crear la carpeta si no existe
-          mv proyecto/html ../Reportes/  # Mover el reporte generado
+          cd proyecto
+          mutmut run --paths-to-mutate classes/
+
+      - name: Reporte mutmut
+        continue-on-error: true
+        run: |
+          cd proyecto
+          mutmut html
+          mkdir -p report_mutante
+          mv index.html report_mutante/index.html  # Mueve el reporte generado a report_mutante
+      
+      - name: Move Mutmut report to Reportes
+        run: |
+          mkdir -p ../Reportes
+          mv proyecto/report_mutante ../Reportes/
+        
 
       - name: Set up Git for deployment
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
 
-      # Preparar y desplegar a GitHub Pages
       - name: Deploy Playwright report to GitHub Pages
         run: |
           git fetch origin gh-pages || echo "No previous gh-pages branch"

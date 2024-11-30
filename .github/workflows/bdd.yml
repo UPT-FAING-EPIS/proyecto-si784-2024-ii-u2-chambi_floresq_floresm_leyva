@@ -3,11 +3,11 @@ name: Generate Allure Report and Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # Cambia 'main' si usas otra rama como principal
+      - main  
 
 jobs:
   generate-report:
-    runs-on: ubuntu-latest  # Usa un runner de Ubuntu, puedes cambiarlo a Windows si prefieres
+    runs-on: ubuntu-latest  
 
     steps:
       - name: Checkout repository
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.9'  # Cambia la versión si es necesario
+          python-version: '3.9'  
 
       - name: Install dependencies
         run: |
